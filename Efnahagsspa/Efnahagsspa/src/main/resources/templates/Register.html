@@ -237,10 +237,18 @@
     <form th:action="@{/registeruser}" method="post" class="form login">
 
         <br/>
+        <div class="form__field">
+            <label for="user_name"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Name</span></label>
+            <input id="user_name" type="text" name="user_Name" class="form__input" placeholder="Name" required>
+        </div>
 
         <div class="form__field">
             <label for="login__username"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use></svg><span class="hidden">Username</span></label>
-            <input id="login__username" type="text" name="username" class="form__input" placeholder="Username" required>
+            <input id="login__username" type="text" name="login_username" class="form__input" placeholder="Username" required>
+        </div>
+        <div class="form__field">
+            <label for="user_email"><svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#lock"></use></svg><span></span></label>
+            <input id="user_email" type="text" name="user_email" class="form__input" placeholder="Email" required>
         </div>
 
         <div class="form__field">

@@ -4,16 +4,28 @@ package is.hi.hbv501GEfnahagsspa.Entities;
 import javax.persistence.*;
 import javax.xml.soap.Name;
 
-
+@Table(name = "User")
 @Entity
 
 public class  User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    public String userNane;
+    public String userName;
     public String userPassword;
     public String Name;
+    public String email;
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String userEmail;
+
     public User() {
 
     }
@@ -24,7 +36,7 @@ public class  User {
     }
 
     public User(String userNane, String userPassword, String name) {
-        this.userNane = userNane;
+        this.userName = userName;
         this.userPassword = userPassword;
         Name = name;
     }
@@ -37,12 +49,12 @@ public class  User {
         this.id = id;
     }
 
-    public String getUserNane() {
-        return userNane;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserNane(String userNane) {
-        this.userNane = userNane;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getUserPassword() {
@@ -59,5 +71,14 @@ public class  User {
 
     public void setName(String name) {
         Name = name;
+    }
+
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }
