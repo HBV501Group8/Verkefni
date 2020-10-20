@@ -1,7 +1,7 @@
 package is.hi.hbv501GEfnahagsspa;
 
-import is.hi.hbv501GEfnahagsspa.Entities.User;
-import is.hi.hbv501GEfnahagsspa.Services.UserService;
+import is.hi.hbv501GEfnahagsspa.entities.User;
+import is.hi.hbv501GEfnahagsspa.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

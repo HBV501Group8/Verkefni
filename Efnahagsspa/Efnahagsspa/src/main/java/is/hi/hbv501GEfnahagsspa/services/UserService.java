@@ -1,6 +1,6 @@
-package is.hi.hbv501GEfnahagsspa.Services;
+package is.hi.hbv501GEfnahagsspa.services;
 
-import is.hi.hbv501GEfnahagsspa.Entities.User;
+import is.hi.hbv501GEfnahagsspa.entities.User;
 
 import java.util.Optional;
 

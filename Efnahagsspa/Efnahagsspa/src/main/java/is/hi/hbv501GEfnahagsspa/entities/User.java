@@ -1,4 +1,4 @@
-package is.hi.hbv501GEfnahagsspa.Entities;
+package is.hi.hbv501GEfnahagsspa.entities;
 
 
 import javax.persistence.*;
