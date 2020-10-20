@@ -18,8 +18,8 @@ public class EfnahagsspaApplication {
 */
 	public static void main(String[] args) throws IOException {
 		ForecastBuilder prufa = new ForecastBuilder();
-		Response response = prufa.downloadInputData("VLF");
-		System.out.println(response.body().string());
+		Response response = prufa.downloadInputData("Mannfjoldi-is");
+		//Response response = prufa.downloadInputData("VLF");
 	}
 }
 	

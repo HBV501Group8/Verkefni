@@ -2,6 +2,8 @@ package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
 import is.hi.hbv501GEfnahagsspa.EfnahagsspaApplication;
 import okhttp3.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.boot.SpringApplication;
 
 import javax.persistence.ElementCollection;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -127,21 +130,34 @@ public class ForecastBuilder {
                     "\", \"selection\": { \"filter\": \"item\"," +
                     " \"values\": [\"" + parameter[1] + "\"]}},");
         }
-
         // End of json query, always asks for json formated response
         jsonQuery.setLength(jsonQuery.length() - 1); // delete extra comma at end
         jsonQuery.append("],\"response\": { \"format\": \"json\"}}");
 
-        System.out.println(jsonQuery.toString());
+        //TODO
+        // Setja inn try hér ef skil eru 404 og ekki json response.
 
+        // post request sent to url
         RequestBody body = RequestBody.create(jsonQuery.toString(), JSON);
-
         Request request = new Request.Builder().url(url).post(body).build();
 
         Call call = client.newCall(request);
         Response response = call.execute();
-        return response;
 
+        //JSON response parsed
+
+        JSONObject jo = new JSONObject(response.body().string());
+        System.out.println(jo.toString());
+        JSONArray jsonArray = jo.getJSONArray("data");
+        System.out.println(jsonArray.toString());
+        Iterator itr2 = jsonArray.iterator();
+        while(itr2.hasNext()){
+            System.out.println(itr2.next());
+        }
+
+        //JSONObject joParams = jo.getJSONObject("data");
+        //JSONArray jsonArray = joParams.getJSONArray("value");
+        return response;
     }
 
     public static void main() throws IOException{
