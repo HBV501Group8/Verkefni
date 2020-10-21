@@ -6,13 +6,16 @@ import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.helper.StringUtil;
+import org.renjin.script.RenjinScriptEngineFactory;
+import org.renjin.sexp.Vector;
 import org.springframework.boot.SpringApplication;
-import org.threeten.extra.Quarter;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -35,13 +38,52 @@ public class ForecastBuilder {
     }
 
     //TODO klára fyrst föllin hér að neðan, útfæra svo þennan með köllum á þau
-    public ForecastBuilder(String forecastName, int length, String frequency, String model, String ... seriesName){
+    public ForecastBuilder(String forecastName, int length,
+                           String model, String ... seriesName) throws IOException{
+
         this.forecastName = forecastName;
 
-        /*
-        for each series name:
-            ForecastInput.put(name, thisdownloadInputData(url, name));
-         */
+        // Load required data from Statistics Iceland
+        for(String name:seriesName) {
+            forecastInput.put(name, downloadInputData(name));
+        }
+
+        //TODO EF bætt við tímaröðum með aðra tíðni en ársfjórðunglega þarf hér að
+        // þræða í gegnum þau input sem ekki eru á sömu tíðni og færa upp ef hægt.
+
+        // Input data time period equalized
+        // MinMax and MaxMin dates found
+        LocalDate minMax = LocalDate.of(3000, 1, 1);
+        LocalDate maxMin = LocalDate.of(1000, 1, 1);
+
+        for(ForecastInput input:forecastInput.values()) {
+            LocalDate max = input.getTime()[input.getTime().length-1];
+            LocalDate min = input.getTime()[0];
+            if(max.compareTo(minMax) < 0) minMax = max;
+            if(min.compareTo(maxMin) > 0) maxMin = min;
+        }
+
+
+        // Data newer than MinMax and older than MaxMin thrown out
+        // length of inputs stored for future use
+        int inputLen = 0;
+        for(ForecastInput input:forecastInput.values()) {
+            LocalDate[] temp_time = input.getTime();
+            double[] temp_series = input.getSeries();
+
+            int max = temp_time.length-1;
+            int min = 0;
+
+            // Iterate through array from both sides to find indices
+            // between which data will be kept.
+            while(temp_time[min].compareTo(maxMin) < 0) min++;
+            while(temp_time[max].compareTo(minMax) > 0) max--;
+
+            input.setTime(Arrays.copyOfRange(temp_time, min, max));
+            input.setSeries(Arrays.copyOfRange(temp_series,min, max));
+            inputLen = max-min+1;
+        }
+
 
         /*
         Keyra forecast creation fall - output á að vera forecastResult object
@@ -62,7 +104,7 @@ public class ForecastBuilder {
     // þarf að summa yfir tímabilið, aðrar ekki.
 
     // Lookup table with information on input data from Statistics Iceland
-    private static Map<String, String[][]> inputLookup = new HashMap<String, String[][]>();
+    private static final Map<String, String[][]> inputLookup = new HashMap<String, String[][]>();
     {
         inputLookup.put("Mannfjoldi-is",
                 new String[][] {{"Ibuar/mannfjoldi/1_yfirlit/arsfjordungstolur/MAN10001.px"}, {"q"},
@@ -111,7 +153,7 @@ public class ForecastBuilder {
         inputLookup.put("VLF",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
                         {"Mælikvarði","0"},{"Skipting","14"}});
-    };
+    }
 
 
     // Use: downloadInputData(url, name)
@@ -223,6 +265,77 @@ public class ForecastBuilder {
         return input;
 
     }
+
+    public ForecastResult generateForecast(HashMap<String, ForecastInput> forecastInput, int length,
+                                           String frequency, String model, LocalDate maxMin,
+                                           LocalDate minMax, int inputLen) throws ScriptException {
+
+        ForecastResult forecastResult = new ForecastResult();
+        forecastResult.setForecastModel(model);
+        forecastResult.setFrequency(frequency);
+
+        RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
+        ScriptEngine engine = factory.getScriptEngine();
+
+        //TODO má bæta við fleiri líkönum hér - nice to have
+        // færa þá allt VAR specific inn í þessa if-setningu
+        //if(model.equals("var")){
+        //}
+
+        // load required R libraries
+        engine.eval("library('vars')");
+
+
+        // Define general variables needed in R script
+        // freq, month and year are needed in ts()
+        // inputLen is needed to define data.frame
+        // length is needed to define length of forecast in R
+        int month = maxMin.getMonthValue();
+        int year = maxMin.getYear();
+        int freq;
+        if(frequency.equals("m")) {
+            freq = 12;
+        }else if(frequency.equals("q")){
+            freq = 4;
+            month = month/4;
+        }else {
+            freq = 1;
+        }
+        engine.put("inputLen", inputLen);
+        engine.put("freq", freq);
+        engine.put("len", length);
+
+        // feed input into R process
+        engine.eval("input = data.frame()[1:inputLen, ]");
+        for (Map.Entry<String, ForecastInput> entry : forecastInput.entrySet()) {
+            String name = entry.getKey();
+            ForecastInput input = entry.getValue();
+
+            engine.put(name,input.getSeries());
+            engine.eval(name + "_ts = ts(name, start = c(" + year + "," + month + "), frequency = freq)");
+            engine.eval("input[\"" + name + "\"] = " + name + "_ts");
+        }
+
+        // var estimated
+        // p selected using minimum AIC
+        engine.eval("p_optimum = VARselect(y, lag.max = 5, type = \"both\")$selection[0]");
+        engine.eval("var = VAR(input, p = p_optimum, type = \"both\"");
+
+        //var used to forecast
+        engine.eval("forecast = predict(var, n.ahead = "+ length +", ci = 0.95)");
+
+        // forecast moved into java and assigned to forecastResult
+
+
+
+
+
+        return forecastResult;
+
+    }
+
+
+
 
     public static void main() throws IOException{
 

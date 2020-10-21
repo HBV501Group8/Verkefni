@@ -26,6 +26,30 @@ public class ForecastResult {
         Series = series;
     }
 
+    public double[] getLower() {
+        return lower;
+    }
+
+    public void setLower(double[] lower) {
+        this.lower = lower;
+    }
+
+    public double[] getUpper() {
+        return upper;
+    }
+
+    public void setUpper(double[] upper) {
+        this.upper = upper;
+    }
+
+    public LocalDate[] getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDate[] time) {
+        this.time = time;
+    }
+
     public String getForecastModel() {
         return forecastModel;
     }
