@@ -1,26 +1,22 @@
 package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ForecastResult {
 
     //TODO Bæta við nafni eða einhverjum identifyer - ef þarf til tengja við Forecast object
-    private Date start;
     private String frequency; // m monthly, q quarterly, y yearly
     private double[] Series;
+    private double[] lower;
+    private double[] upper;
+    private LocalDate[] time;
     private String forecastModel;
     private String forecastDescription;
 
     public ForecastResult() {
     }
 
-    public Date getStart() {
-        return start;
-    }
-
-    public void setStart(Date start) {
-        this.start = start;
-    }
 
     public double[] getSeries() {
         return Series;

@@ -12,14 +12,8 @@ import java.io.IOException;
 @EnableJpaRepositories
 public class EfnahagsspaApplication {
 
-/*	public static void main(String[] args) {
+	public static void main(String[] args) {
 		SpringApplication.run(EfnahagsspaApplication.class, args);
-	}
-*/
-	public static void main(String[] args) throws IOException {
-		ForecastBuilder prufa = new ForecastBuilder();
-		Response response = prufa.downloadInputData("Mannfjoldi-is");
-		//Response response = prufa.downloadInputData("VLF");
 	}
 }
 	
