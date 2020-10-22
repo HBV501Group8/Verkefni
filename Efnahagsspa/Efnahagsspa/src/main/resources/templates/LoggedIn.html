@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p> Þú ert skráður inn sem </p>
+    <div th:text="${session.Name}"></div>
+<div>
+    <form th:action="@{/}" method="post">
+        <br/>
+
+        <input type="submit" value="Sign out"/>
+    </form>
+</div>
+</body>
+</html>
