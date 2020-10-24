@@ -10,7 +10,7 @@ public interface AuthRepository extends JpaRepository<User,Long> {
     User save(User user);
     void delete(User user);
     Optional<User> findById(long id);
-    Optional<User> findByuserName(String userName);
-    Optional<User> findByuserPassword(String userPassword);
+    User findByuserName(String userName);
+    User findByuserPassword(String userPassword);
 
 }

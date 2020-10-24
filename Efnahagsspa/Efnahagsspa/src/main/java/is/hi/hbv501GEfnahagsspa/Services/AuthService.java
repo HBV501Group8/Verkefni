@@ -11,7 +11,6 @@ public interface AuthService {
     void save(User user);
     void delete(User user);
     Optional<Auth> findById(long id);
-    Optional<User> findByuserName(String userName);
-    Optional<User> findByuserPassword(String userPassword);
+
 
 }

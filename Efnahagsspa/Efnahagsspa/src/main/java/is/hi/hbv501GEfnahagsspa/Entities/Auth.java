@@ -1,23 +1,18 @@
 package is.hi.hbv501GEfnahagsspa.Entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "User")
 @Entity
 public class Auth {
-    private String id;
-    public String password;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     public String userName;
+    public String userPassword;
 
+    public  Auth() {
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getUserName() {
@@ -28,12 +23,11 @@ public class Auth {
         this.userName = userName;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    @Id
-    public String getId() {
-        return id;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 }

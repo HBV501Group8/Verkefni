@@ -10,8 +10,8 @@ public interface UserService {
     User save(User user);
     void delete(User user);
     Optional<User> findById(long id);
-    User findByUserName(String userName);
     List<User> findAll();
-
+    User findByuserName(String userName);
+    User findByuserPassword(String userPassword);
 
 }

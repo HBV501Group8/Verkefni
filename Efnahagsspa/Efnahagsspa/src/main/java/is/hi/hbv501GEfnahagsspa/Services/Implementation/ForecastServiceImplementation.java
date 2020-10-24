@@ -18,7 +18,7 @@ public class ForecastServiceImplementation implements ForecastService {
 
     @Override
     public void delete(ForeCast foreCast) {
-        repository.delete((foreCast));
+        repository.delete(foreCast);
     }
 
     @Override

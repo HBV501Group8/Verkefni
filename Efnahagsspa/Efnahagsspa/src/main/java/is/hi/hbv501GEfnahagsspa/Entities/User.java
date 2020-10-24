@@ -1,4 +1,4 @@
-package is.hi.hbv501GEfnahagsspa.Entities;
+    package is.hi.hbv501GEfnahagsspa.Entities;
 
 
 import javax.persistence.*;
@@ -13,50 +13,8 @@ public class  User {
     private long id;
     public String userName;
     public String userPassword;
-    public String Name;
-    public String email;
-    public boolean isEnabled;
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String userEmail;
-
-    public User() {
-
-    }
-
-    public boolean Boolean (String username, String password) {
-
-        return true;
-    }
-
-    public User(String userNane, String userPassword, String name) {
-        this.userName = userName;
-        this.userPassword = userPassword;
-        Name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    private String Name;
+    private String Email;
 
     public String getUserName() {
         return userName;
@@ -82,12 +40,16 @@ public class  User {
         Name = name;
     }
 
-
-    public void setEmail(String email) {
-        this.email = email;
+    public String getEmail() {
+        return Email;
     }
 
-    public String getEmail() {
-        return email;
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+
+    public User() {
+
     }
 }
