@@ -1,0 +1,6 @@
+#FileLock
+#Thu Oct 22 08:58:22 GMT 2020
+hostName=192.168.100.199
+id=1754f87cf1e47ae35fcc0d4df3f1858fa5016a2f95f
+method=file
+server=192.168.100.199\:50618
