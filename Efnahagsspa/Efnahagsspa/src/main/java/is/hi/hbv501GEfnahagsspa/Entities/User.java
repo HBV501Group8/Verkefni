@@ -10,11 +10,25 @@ import javax.xml.soap.Name;
 public class  User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    public long id;
     public String userName;
     public String userPassword;
+
+
     private String Name;
     private String Email;
+
+    private Boolean isEnabled;
+    //public Boolean Admin;
+    public Boolean isAdmin;
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
 
     public String getUserName() {
         return userName;
@@ -51,5 +65,13 @@ public class  User {
 
     public User() {
 
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
     }
 }

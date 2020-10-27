@@ -25,10 +25,7 @@ public class UserController {
     }
     @Autowired
     @RequestMapping("/")
-
     public String Home() {
-
-        //model.addAttribute("movies", movieService.findAll() );
         return "testLogin";
     }
     @RequestMapping("/register")
@@ -41,40 +38,77 @@ public class UserController {
         return "testLogin";
     }
 
-
-
-
-
     @RequestMapping(value = "/registeruser", method = RequestMethod.POST)
     public String userregister(HttpServletRequest request, Model model, HttpSession session, User user) {
         String Name = request.getParameter("Name");
         String userName = request.getParameter("login_username");
         String password = request.getParameter("password");
         String Email = request.getParameter("user_email");
-
-        user.setName(Name);
-        user.setUserName(userName);
-        user.setUserPassword(password);
-        user.setEmail(Email);
-        userService.save(user);
+        User userexists =  userService.findByuserName(userName);
+        if(userexists==null) {
+            user.setName(Name);
+            user.setUserName(userName);
+            user.setUserPassword(password);
+            user.setEmail(Email);
+            userService.save(user);
+        }
         return "testLogin";
-
     }
     @RequestMapping(value = "/logintest", method = RequestMethod.POST)
     public String userlogin(User user,HttpServletRequest request, Model model, HttpSession session) {
         String userName = request.getParameter("username");
         String userPassword = request.getParameter("password");
-
         User userexists =  userService.findByuserName(userName);
         User passswexists =  userService.findByuserPassword(userPassword);
-        if(userexists!=null && passswexists!=null) {
-            return "showImage";
-        }
+//      //  User userAdmin =  userService.findByAdmin(userName);
+        Boolean blnadmin = userexists.getAdmin();
+        System.out.println(blnadmin+"");
+
+
+        if(userexists!=null && passswexists!=null)  {
+            if(!blnadmin) {
+                return "showImage";
+            }
+            else {
+                model.addAttribute("users", userService.findAll());
+                return "users";
+                }
+            }
         return "testLogin";
     }
 
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public String usersGET(Model model){
+        model.addAttribute("users", userService.findAll());
+        return "users";
+    }
 
+    @RequestMapping(value = "/usersman", method = RequestMethod.GET)
+    public String usersfancy(Model model){
+        model.addAttribute("users", userService.findAll());
+        return "test";
+    }
 
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public String users(User user,HttpServletRequest request,Model model){
+       // String id = request.getParameter("userID");
+       // System.out.println("test");
+        User usertest = userService.findById(161);
+       //return "users";
+        userService.delete(usertest);
+        model.addAttribute("user", userService.findAll());
+        return "users";
+    }
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public String usersedit(User user,HttpServletRequest request,Model model){
+        // String id = request.getParameter("userID");
+        // System.out.println("test");
+        //User usertest = userService.findById(161);
+        //return "users";
+        //userService.delete(usertest);
+        model.addAttribute("user", userService.findById(1));
+        return "test";
+    }
 }
 
 

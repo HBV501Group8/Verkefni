@@ -9,9 +9,10 @@ public interface UserService {
 
     User save(User user);
     void delete(User user);
-    Optional<User> findById(long id);
+    User findById(long id);
     List<User> findAll();
     User findByuserName(String userName);
     User findByuserPassword(String userPassword);
+
 
 }

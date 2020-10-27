@@ -30,7 +30,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public Optional<User> findById(long id) {
+    public User findById(long id) {
         return repository.findById(id);
     }
 
