@@ -1,6 +1,6 @@
 #FileLock
-#Tue Oct 27 14:14:29 GMT 2020
-hostName=192.168.100.199
-id=1756a68fff24befefa16c1f13d3c4117280976bfd00
+#Mon Oct 19 16:42:13 GMT 2020
+hostName=DESKTOP-S5O2BD3
+id=17541bd5f70eb803b62e2afc93c879635936b7f2f97
 method=file
-server=192.168.100.199\:50168
+server=192.168.1.2\:10895
