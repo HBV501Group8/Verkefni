@@ -152,15 +152,18 @@
 </style>
 <body>
 <div class="container">
-    <form id="contact" th:action="@{/updateUser}"  method="GET    " th:object="${user}">
+    <form id="contact" th:action="@{/updateUser}" autocomplete="off" method="GET    " th:object="${user}">
         <h3>Breyta notanda</h3>
         <fieldset>
-            <input placeholder="Name"   Name="Name" type="text" tabindex="1" th:field="*{name}" required autofocus>
+            <label >User</label><br>
+            <input placeholder="Name"  Name="Name" type="text" tabindex="1" th:field="*{name}" required autofocus>
         </fieldset>
         <fieldset>
+            <label >Email</label><br>
             <input placeholder="Email" Name="Email" type="email" tabindex="2" th:field="*{Email}" required>
         </fieldset>
         <fieldset>
+            <label >Password</label><br>
             <input placeholder="Password" name="password" type="text"  tabindex="3" th:field="*{userPassword}" required>
         </fieldset>
         <fieldset>
@@ -168,7 +171,7 @@
             <input  placeholder="Enabled" name="isEnabled" type="checkbox" tabindex="4"    th:checked="*{isEnabled}" >&nbsp;&nbsp;Enabled
         </fieldset>
         <fieldset>
-            <input  placeholder="Admin" name="isAdmin" type="checkbox" tabindex="5"  th:checked="*{isAdmin}">&nbsp;&nbsp;Admin
+            <input  placeholder="Admin" name="isAdmin" type="checkbox" tabindex="5" disabled  th:checked="*{isAdmin}">&nbsp;&nbsp;Admin
         </fieldset>
 
         <fieldset>
