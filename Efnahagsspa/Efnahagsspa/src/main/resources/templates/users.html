@@ -15,6 +15,8 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Enabled</th>
+                <th>Admin</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -24,6 +26,8 @@
                 <td th:text="${user.id}"></td>
                 <td th:text="${user.name}"></td>
                 <td th:text="${user.email}"></td>
+                <td th:text="${user.isEnabled}"></td>
+                <td th:text="${user.isAdmin}"></td>
                 <td><a th:href="@{/edit/{id}(id=${user.id})}">Edit</a></td>
                 <td><a th:href="@{/delete/{id}(id=${user.id})}">Delete</a></td>
             </tr>

@@ -1,6 +1,8 @@
     package is.hi.hbv501GEfnahagsspa.Entities;
 
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import javax.persistence.*;
 import javax.xml.soap.Name;
 
@@ -10,25 +12,19 @@ import javax.xml.soap.Name;
 public class  User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    // Eigindi fyrir User klasa
+
     public long id;
     public String userName;
     public String userPassword;
-
-
     private String Name;
     private String Email;
-
-    private Boolean isEnabled;
-    //public Boolean Admin;
+    public Boolean isEnabled;
     public Boolean isAdmin;
 
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
 
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
+    // Setters og geters
 
     public String getUserName() {
         return userName;
@@ -74,4 +70,13 @@ public class  User {
     public void setEnabled(Boolean enabled) {
         isEnabled = enabled;
     }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
+
 }

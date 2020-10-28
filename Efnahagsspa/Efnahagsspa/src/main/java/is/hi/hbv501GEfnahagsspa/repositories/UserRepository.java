@@ -10,12 +10,18 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
+    // Stofna eða uppfæra notanda
     User save(User user);
+    // Eyða notanda
     void delete(User user);
+    // Finna nptanda eftir id
     User findById(long id);
+    //Finna notanda eftir notandanafni
     User findByuserName(String userName);
-
+    // Ná í alla notendur
     List<User> findAll();
+    // Ná í notanda eftir lykilorði
    User findByuserPassword(String userPassword);
+
 
 }
