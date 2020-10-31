@@ -1,0 +1,11 @@
+
+.form1{
+    max-width: 500px;
+    margin: auto;
+}
+
+.row{
+    height: 21px;
+    display: flex;
+    padding: 5px;
+}

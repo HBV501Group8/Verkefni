@@ -14,8 +14,10 @@ public class ForecastInput {
     private String frequency; // m monthly, q quarterly, y yearly
     @ElementCollection
     private double[] series;
+
     @ElementCollection
     private LocalDate[] time;
+
 
     public ForecastInput() {
     }
