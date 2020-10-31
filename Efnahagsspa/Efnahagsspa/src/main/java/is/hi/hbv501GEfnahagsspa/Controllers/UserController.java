@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -54,12 +53,15 @@ public class UserController {
         String password = request.getParameter("password");
         String Email = request.getParameter("user_email");
         User userexists =  userService.findByuserName(userName);
+        User passwordexists =  userService.findByuserPassword(password);
         // Ef notandi er þegar til er ekkert gert
-        if(userexists==null) {
+        if(userexists==null && passwordexists==null) {
             user.setName(Name);
             user.setUserName(userName);
             user.setUserPassword(password);
             user.setEmail(Email);
+            user.setEnabled(true);
+            user.setAdmin(false);
             userService.save(user);
         }
 
@@ -81,6 +83,11 @@ public class UserController {
         User userexists =  userService.findByuserName(userName);
         User passswexists =  userService.findByuserPassword(userPassword);
 
+        // Ef username er ekki til staðar þá er ekert gert
+
+        if(userexists==null)  {
+            return "testLogin";
+        }
         // Athuga hvort user sé Admin
         Boolean blnadmin = userexists.getAdmin();
 
@@ -111,19 +118,23 @@ public class UserController {
     // Route fyrir að eyða notanda samkvæmt ID
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String users(User user,HttpServletRequest request,Model model){
-        User usertest = userService.findById(161);
-        userService.delete(usertest);
+    public String users(@PathVariable("id") String strid,User user,HttpServletRequest request,Model model){
+        int intid = Integer.parseInt(strid);
+        User usertest = userService.findById(intid);
+        if(intid!=1)
+            userService.delete(usertest);
 
-        model.addAttribute("user", userService.findAll());
+
+        model.addAttribute("users", userService.findAll());
         return "users";
     }
 
     //Þetta route er til að birta breyta notanda form
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public String usersedit(User user,HttpServletRequest request,Model model){
-        model.addAttribute("user", userService.findById(1));
+    public String usersedit(@PathVariable("id") String strid,HttpServletRequest request,Model model){
+        int intid = Integer.parseInt(strid);
+        model.addAttribute("user", userService.findById(intid));
         return "test";
     }
 
@@ -136,13 +147,27 @@ public class UserController {
 
         String Name = request.getParameter("Name");
         String Email = request.getParameter("Email");
-        String password = request.getParameter("password");
-        Boolean isEnabled = Boolean.parseBoolean(request.getParameter("isEnabled"));
+        String userName = request.getParameter("userName");
+        String password = request.getParameter("userPassword");
+        String isEnabled = request.getParameter("isEnabled");
         Boolean isAdmin = Boolean.parseBoolean(request.getParameter("isAdmin"));
         // Kalla á uppfæra notendur
-        User userUpdate =  userService.findById(1);
+        User userUpdate =  userService.findByuserName(userName);
+
+        userUpdate.setName(Name);
+        userUpdate.setUserPassword(password);
         userUpdate.setEmail(Email);
+
+        // Uppfæra hvort notnndi sé virkur
+
+        String strcheck = isEnabled;
+        if(strcheck.equals("on"))
+            userUpdate.setEnabled(true);
+        if(!strcheck.equals("on"))
+            userUpdate.setEnabled(false);
+
         userService.save(userUpdate);
+
 
         model.addAttribute("users", userService.findAll());
         return "users";

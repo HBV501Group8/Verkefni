@@ -156,19 +156,24 @@
         <h3>Breyta notanda</h3>
         <fieldset>
             <label >User</label><br>
-            <input placeholder="Name"  Name="Name" type="text" tabindex="1" th:field="*{name}" required autofocus>
+            <input placeholder="Name"  Name="Name" type="text" tabindex="1" th:field="*{Name}" required autofocus>
         </fieldset>
+
         <fieldset>
             <label >Email</label><br>
             <input placeholder="Email" Name="Email" type="email" tabindex="2" th:field="*{Email}" required>
         </fieldset>
         <fieldset>
+            <label >UserName</label><br>
+            <input placeholder="UserName" name="userName" type="text"  tabindex="7" th:field="*{userName}" required>
+        </fieldset>
+        <fieldset>
             <label >Password</label><br>
-            <input placeholder="Password" name="password" type="text"  tabindex="3" th:field="*{userPassword}" required>
+            <input placeholder="userPassword" name="userPassword" type="text"  tabindex="3" th:field="*{userPassword}" required>
         </fieldset>
         <fieldset>
 
-            <input  placeholder="Enabled" name="isEnabled" type="checkbox" tabindex="4"    th:checked="*{isEnabled}" >&nbsp;&nbsp;Enabled
+            <input  placeholder="isEnabled" name="isEnabled" type="checkbox" tabindex="4"    th:checked="*{isEnabled}" >&nbsp;&nbsp;Enabled
         </fieldset>
         <fieldset>
             <input  placeholder="Admin" name="isAdmin" type="checkbox" tabindex="5" disabled  th:checked="*{isAdmin}">&nbsp;&nbsp;Admin
