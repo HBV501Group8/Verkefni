@@ -1,12 +1,12 @@
 package is.hi.hbv501GEfnahagsspa.Services;
 
-import is.hi.hbv501GEfnahagsspa.Entities.ForeCast;
+import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
 
 import java.util.Optional;
 
 public interface ForecastService {
-    ForeCast save(ForeCast foreCast);
-    void delete(ForeCast foreCast);
-    Optional<ForeCast> findById(long id);
-    Optional<ForeCast> findByforeCastName(String foreCastName);
+    Forecast save(Forecast foreCast);
+    void delete(Forecast foreCast);
+    Optional<Forecast> findById(long id);
+    Optional<Forecast> findByforecastName(String foreCastName);
 }

@@ -13,7 +13,7 @@ import java.util.*;
 
 @Table(name = "Fore_Cast")
 @Entity
-public class ForeCast {
+public class Forecast {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long forecastID;
@@ -23,10 +23,10 @@ public class ForeCast {
     @ElementCollection
     private ArrayList<ForecastInput> forecastInput;
 
-    public ForeCast() {
+    public Forecast() {
 
     }
-    public ForeCast(String forecastNme, int length, String model,
+    public Forecast(String forecastNme, int length, String model,
                     String ... seriesName) throws IOException, ScriptException {
         ForecastBuilder forecastBuilder = new ForecastBuilder(forecastName, length, model,
                 seriesName);

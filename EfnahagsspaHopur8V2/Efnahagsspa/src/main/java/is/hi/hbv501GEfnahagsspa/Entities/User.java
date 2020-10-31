@@ -1,7 +1,7 @@
     package is.hi.hbv501GEfnahagsspa.Entities;
 
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+//import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.persistence.*;
 import javax.xml.soap.Name;
