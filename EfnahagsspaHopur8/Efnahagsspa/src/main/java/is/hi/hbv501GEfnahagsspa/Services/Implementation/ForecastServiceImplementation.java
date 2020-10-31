@@ -1,6 +1,7 @@
 package is.hi.hbv501GEfnahagsspa.Services.Implementation;
 
-import is.hi.hbv501GEfnahagsspa.Entities.ForeCast;
+
+import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
 import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.repositories.ForecastRepository;
 import org.springframework.stereotype.Service;
@@ -12,22 +13,22 @@ public class ForecastServiceImplementation implements ForecastService {
     ForecastRepository repository;
 
     @Override
-    public ForeCast save(ForeCast foreCast) {
+    public Forecast save(Forecast foreCast) {
         return repository.save(foreCast);
     }
 
     @Override
-    public void delete(ForeCast foreCast) {
+    public void delete(Forecast foreCast) {
         repository.delete(foreCast);
     }
 
     @Override
-    public Optional<ForeCast> findById(long id) {
+    public Optional<Forecast> findById(long id) {
         return repository.findById(id);
     }
 
     @Override
-    public Optional<ForeCast> findByforeCastName(String foreCastName) {
+    public Optional<Forecast> findByforeCastName(String foreCastName) {
         return  repository.findByforeCastName(foreCastName);
     }
 }
