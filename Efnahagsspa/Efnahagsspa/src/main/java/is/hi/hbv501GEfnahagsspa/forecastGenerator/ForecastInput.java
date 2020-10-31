@@ -1,13 +1,20 @@
 package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
 public class ForecastInput {
 
-    //TODO Bæta við nafni eða einhverjum identifyer - ef þarf til tengja við Forecast object
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long forecastID;
+
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
+    @ElementCollection
     private double[] series;
+    @ElementCollection
     private LocalDate[] time;
 
     public ForecastInput() {

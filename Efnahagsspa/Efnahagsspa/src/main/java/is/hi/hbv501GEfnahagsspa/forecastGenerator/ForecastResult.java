@@ -1,19 +1,35 @@
 package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Entity
 public class ForecastResult {
 
-    //TODO Bæta við nafni eða einhverjum identifyer - ef þarf til tengja við Forecast object
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long forecastID;
+
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
+
+    @ElementCollection
     private HashMap<String, double[]> series;
+
+    @ElementCollection
     private HashMap<String, double[]> lower;
+
+    @ElementCollection
     private HashMap<String, double[]> upper;
+
+    @ElementCollection
     private LocalDate[] time;
+
     private String forecastModel;
+
+    @ElementCollection
     private HashMap<String, String> forecastDescription;
 
     public ForecastResult() {

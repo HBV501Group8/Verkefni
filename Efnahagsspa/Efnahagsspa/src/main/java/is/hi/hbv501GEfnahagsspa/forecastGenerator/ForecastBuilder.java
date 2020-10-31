@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,16 +34,14 @@ public class ForecastBuilder {
 
 
     private String forecastName;
-    private ForecastResult forecastResult = new ForecastResult();
-    private List<ForecastInput> forecastInput = new ArrayList<>();
-
-    public ForecastBuilder() {
-    }
+    private ForecastResult forecastResult;
+    private ArrayList<ForecastInput> forecastInput = new ArrayList<>();
 
     //TODO klára fyrst föllin hér að neðan, útfæra svo þennan með köllum á þau
-    public ForecastBuilder(String forecastName, int length,
-                           String model, String ... seriesName) throws IOException{
+    public ForecastBuilder(String forecastName, int length, String model,
+                           String ... seriesName) throws IOException, ScriptException{
 
+        // asign name to forecast
         this.forecastName = forecastName;
 
         // Load required data from Statistics Iceland
@@ -84,12 +83,24 @@ public class ForecastBuilder {
             input.setSeries(Arrays.copyOfRange(temp_series,min, max));
         }
 
-
-        /*
-        Keyra forecast creation fall - output á að vera forecastResult object
-        Setja það se m
-         */
+        String freq = this.forecastInput.get(0).getFrequency();
+        this.forecastResult = generateForecast(this.forecastInput, length, freq, model,
+                                                minMax, maxMin);
     }
+
+    public String getForecastName() {
+        return forecastName;
+    }
+
+
+    public ForecastResult getForecastResult() {
+        return forecastResult;
+    }
+
+    public List<ForecastInput> getForecastInput() {
+        return forecastInput;
+    }
+
 
     //TODO laga þetta implementation - ekki viss um að það sé best að hafa þetta
     // í Hashmap. Hugsanlega ætti lookup table frekar að vera global og skilgreint í main
@@ -106,19 +117,19 @@ public class ForecastBuilder {
     // Lookup table with information on input data from Statistics Iceland
     private static final Map<String, String[][]> inputLookup = new HashMap<String, String[][]>();
     {
-        inputLookup.put("Mannfjoldi-is",
+        inputLookup.put("Mannfjoldi_is",
                 new String[][] {{"Ibuar/mannfjoldi/1_yfirlit/arsfjordungstolur/MAN10001.px"}, {"q"},
                                 {"Sveitarfélag","-"},{"Kyn og ríkisfang", "3"}});
 
-        inputLookup.put("Mannfjoldi-erl",
+        inputLookup.put("Mannfjoldi_erl",
                 new String[][] {{"Ibuar/mannfjoldi/1_yfirlit/arsfjordungstolur/MAN10001.px"}, {"q"},
                                 {"Sveitarfélag","-"},{"Kyn og ríkisfang", "4"}});
 
-        inputLookup.put("Atvinnul-rvk",
+        inputLookup.put("Atvinnul_rvk",
                 new String[][] {{"Samfelag/vinnumarkadur/vinnumarkadsrannsokn/2_arsfjordungstolur/VIN00920.px"}, {"q"},
                                 {"Landsvæði","1"},{"Kyn","0"}, {"Aldur","0"}, {"Eining", "0"}});
 
-        inputLookup.put("Atvinnul-land",
+        inputLookup.put("Atvinnul_land",
                 new String[][]  {{"Samfelag/vinnumarkadur/vinnumarkadsrannsokn/2_arsfjordungstolur/VIN00920.px"}, {"q"},
                                 {"Landsvæði","2"},{"Kyn","0"}, {"Aldur","0"}, {"Eining", "0"}});
 
@@ -134,19 +145,19 @@ public class ForecastBuilder {
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
                         {"Mælikvarði","0"},{"Skipting","2"}});
 
-        inputLookup.put("Vara-ut",
+        inputLookup.put("Vara_ut",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
                         {"Mælikvarði","0"},{"Skipting","9"}});
 
-        inputLookup.put("Vara-inn",
+        inputLookup.put("Vara_inn",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
                         {"Mælikvarði","0"},{"Skipting","12"}});
 
-        inputLookup.put("Thjonusta-ut",
+        inputLookup.put("Thjonusta_ut",
                 new String[][]  {{"Efnahagur/utanrikisverslun/2_thjonusta/thjonusta/UTA04005.px"}, {"q"},
                         {"Þjónustuviðskipti", "0"}, {"Flokkur", "0"}});
 
-        inputLookup.put("Thjonusta-inn",
+        inputLookup.put("Thjonusta_inn",
                 new String[][]  {{"Efnahagur/utanrikisverslun/2_thjonusta/thjonusta/UTA04005.px"}, {"q"},
                         {"Þjónustuviðskipti", "1"}, {"Flokkur", "0"}});
 
@@ -252,7 +263,7 @@ public class ForecastBuilder {
                     time[i] = LocalDate.parse(date, format);
 
                 } catch (Exception e) {
-                    //TODO Hér þarf að bæta við betri meðhöndlun á þessu
+                    //TODO Hér mætti bæta við betri meðhöndlun á þessu
                     time[i] = LocalDate.of(1900, 1, 1);
 
                 }
@@ -337,7 +348,7 @@ public class ForecastBuilder {
         for(ForecastInput input:forecastInput) {
             String name = input.getName();
             engine.put(name,input.getSeries());
-            engine.eval(name + "_ts = ts(name, start = c(" + year + "," + month + "), frequency = freq)");
+            engine.eval(name + "_ts = ts("+ name +", start = c(" + year + "," + month + "), frequency = freq)");
             engine.eval("input[\"" + name + "\"] = " + name + "_ts");
         }
 
@@ -349,16 +360,21 @@ public class ForecastBuilder {
             // var estimated
             // p selected using minimum AIC
             // no unit root test performed - since this is for forecasting only
-            engine.eval("p_optimum = VARselect(y, lag.max = 5, type = \"both\")$selection[1][[1]]");
-            engine.eval("var = VAR(input, p = p_optimum, type = \"both\"");
+            // the lag length p is always 4 (a preferable method would have been to estimate
+            // the optimal p - the vars library includes a function for this called VARselect.
+            // However, it currently does not run on the R JVM engine.
+            engine.eval("var = VAR(input, p = 4, type = \"both\")");
 
             //var used to forecast
             engine.eval("forecast = predict(var, n.ahead = "+ length +", ci = 0.95)");
 
             // extracting model description
-            StringVector descr = (StringVector) engine.eval("capture.output(summary(var))");
+            StringWriter descrWriter = new StringWriter();
+            engine.getContext().setWriter(descrWriter);
+            engine.eval("print(var)");
+            String descr = descrWriter.toString();
             HashMap<String, String> forecastDescription = new HashMap<String, String>();
-            forecastDescription.put("VAR", descr.asString());
+            forecastDescription.put("VAR", descr);
             forecastResult.setForecastDescription(forecastDescription);
 
             // extracting forecast values
@@ -380,8 +396,8 @@ public class ForecastBuilder {
 
         } else {
             // load required R library
+            engine.eval("library('crayon')");
             engine.eval("library('forecast')");
-
             // generate forecast values and extract in
             HashMap<String, double[]> series = new HashMap<String, double[]>();
             HashMap<String, double[]> upper = new HashMap<String, double[]>();
@@ -389,18 +405,31 @@ public class ForecastBuilder {
             HashMap<String, String> forecastDescription = new HashMap<String, String>();
             for(ForecastInput input:forecastInput) {
                 String name = input.getName();
-                engine.eval("library('forecast')");
-                engine.eval("frcst = forecast(auto.arima(input["+ name +"][,])");
 
-                DoubleVector forecastSeries = (DoubleVector)  = engine.eval("as.numeric(frcst$mean[])");
-                DoubleVector forecastUpper = (DoubleVector) = engine.eval("as.numeric(frcst$upper[,2])");
+                // Run forecast estimation in R engine
+                engine.eval("frcst = forecast(auto.arima(input[\""+ name +"\"]), h ="+ length +")");
+
+                // Extract forcasted values to Java
+                DoubleVector forecastSeries = (DoubleVector)  engine.eval("as.numeric(frcst$mean[])");
+                DoubleVector forecastUpper = (DoubleVector) engine.eval("as.numeric(frcst$upper[,2])");
                 DoubleVector forecastLower = (DoubleVector) engine.eval("as.numeric(frcst$lower[,2])");
-                StringVector descr = (StringVector) engine.eval("frcst$model");
+
+                // Extract description for each estimated equation to java
+                StringWriter descrWriter = new StringWriter();
+                engine.getContext().setWriter(descrWriter);
+                engine.eval("print(frcst$model)");
+                String descr = descrWriter.toString();
+
                 series.put(name, forecastSeries.toDoubleArray());
                 upper.put(name, forecastUpper.toDoubleArray());
                 lower.put(name, forecastLower.toDoubleArray());
                 forecastDescription.put(name, descr);
             }
+
+            forecastResult.setSeries(series);
+            forecastResult.setUpper(upper);
+            forecastResult.setLower(lower);
+            forecastResult.setForecastDescription(forecastDescription);
         }
 
         // Return built forecastResult object
