@@ -4,6 +4,7 @@ import is.hi.hbv501GEfnahagsspa.forecastGenerator.ForecastInput;
 import is.hi.hbv501GEfnahagsspa.forecastGenerator.ForecastResult;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Entity
@@ -14,10 +15,9 @@ public class Forecast {
     private long forecastID;
     private String forecastName;
 
+    private ForecastResult forecastResult;
     @ElementCollection
-    private HashMap<String, ForecastResult> forecastResult;
-    @ElementCollection
-    private HashMap<String, ForecastInput> forecastInput;
+    private ArrayList<ForecastInput> forecastInput;
 
 
 

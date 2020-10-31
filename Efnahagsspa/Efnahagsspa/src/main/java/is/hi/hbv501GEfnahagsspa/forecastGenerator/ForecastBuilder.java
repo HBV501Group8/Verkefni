@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.helper.StringUtil;
 import org.renjin.script.RenjinScriptEngineFactory;
+import org.renjin.sexp.DoubleVector;
+import org.renjin.sexp.StringVector;
 import org.renjin.sexp.Vector;
 import org.springframework.boot.SpringApplication;
 
@@ -31,8 +33,8 @@ public class ForecastBuilder {
 
 
     private String forecastName;
-    private Map<String, ForecastResult> forecastResult = new HashMap<>();
-    private Map<String, ForecastInput> forecastInput = new HashMap<>();
+    private ForecastResult forecastResult = new ForecastResult();
+    private List<ForecastInput> forecastInput = new ArrayList<>();
 
     public ForecastBuilder() {
     }
@@ -45,7 +47,7 @@ public class ForecastBuilder {
 
         // Load required data from Statistics Iceland
         for(String name:seriesName) {
-            forecastInput.put(name, downloadInputData(name));
+            forecastInput.add(downloadInputData(name));
         }
 
         //TODO EF bætt við tímaröðum með aðra tíðni en ársfjórðunglega þarf hér að
@@ -56,7 +58,7 @@ public class ForecastBuilder {
         LocalDate minMax = LocalDate.of(3000, 1, 1);
         LocalDate maxMin = LocalDate.of(1000, 1, 1);
 
-        for(ForecastInput input:forecastInput.values()) {
+        for(ForecastInput input:forecastInput) {
             LocalDate max = input.getTime()[input.getTime().length-1];
             LocalDate min = input.getTime()[0];
             if(max.compareTo(minMax) < 0) minMax = max;
@@ -66,8 +68,7 @@ public class ForecastBuilder {
 
         // Data newer than MinMax and older than MaxMin thrown out
         // length of inputs stored for future use
-        int inputLen = 0;
-        for(ForecastInput input:forecastInput.values()) {
+        for(ForecastInput input:forecastInput) {
             LocalDate[] temp_time = input.getTime();
             double[] temp_series = input.getSeries();
 
@@ -81,7 +82,6 @@ public class ForecastBuilder {
 
             input.setTime(Arrays.copyOfRange(temp_time, min, max));
             input.setSeries(Arrays.copyOfRange(temp_series,min, max));
-            inputLen = max-min+1;
         }
 
 
@@ -266,24 +266,25 @@ public class ForecastBuilder {
 
     }
 
-    public ForecastResult generateForecast(HashMap<String, ForecastInput> forecastInput, int length,
-                                           String frequency, String model, LocalDate maxMin,
-                                           LocalDate minMax, int inputLen) throws ScriptException {
+    //TODO lýsing á falli
+    // forecastINput er bara listi af inputs
+    // int length er lengd forcast period
+    // freqency er hver tíðni inputs er
+    // model er bara hvaða módel á að nota (var eða arima)
+    // maxMin á að vera sá tími úr inputs sem er hæstur af þeim sem eru lægstir
+    // minMax er sá tími úr inputs sem er lægstur af þeim sem eru hæstir
+    public ForecastResult generateForecast(ArrayList<ForecastInput> forecastInput, int length,
+                                           String frequency, String model, LocalDate minMax,
+                                           LocalDate maxMin)
+                                            throws ScriptException {
 
+        // Define ForecastResult object to return
         ForecastResult forecastResult = new ForecastResult();
+
+        // set attributes given by parameters
         forecastResult.setForecastModel(model);
         forecastResult.setFrequency(frequency);
 
-        RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
-        ScriptEngine engine = factory.getScriptEngine();
-
-        //TODO má bæta við fleiri líkönum hér - nice to have
-        // færa þá allt VAR specific inn í þessa if-setningu
-        //if(model.equals("var")){
-        //}
-
-        // load required R libraries
-        engine.eval("library('vars')");
 
 
         // Define general variables needed in R script
@@ -292,44 +293,117 @@ public class ForecastBuilder {
         // length is needed to define length of forecast in R
         int month = maxMin.getMonthValue();
         int year = maxMin.getYear();
+        int inputLen = forecastInput.get(0).getSeries().length;
+        // get freq parameter to pass to R engine
+        // also compute LocalDate array for forecast time period
         int freq;
+        LocalDate[] time = new LocalDate[length];
         if(frequency.equals("m")) {
             freq = 12;
+            for(int i = 0; i < length; i++) {
+                time[i] = minMax.plusMonths(i+1);
+            }
         }else if(frequency.equals("q")){
             freq = 4;
             month = month/4;
+            for(int i = 0; i < length; i++) {
+                time[i] = minMax.plusMonths((i+1)*3);
+            }
         }else {
             freq = 1;
+            for(int i = 0; i < length; i++) {
+                time[i] = minMax.plusYears(i+1);
+            }
         }
+
+        // Add time to forecastResult
+        forecastResult.setTime(time);
+
+        // Start R JVM engine
+        RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
+        ScriptEngine engine = factory.getScriptEngine();
+
+        // Put parameters into R engine
         engine.put("inputLen", inputLen);
         engine.put("freq", freq);
         engine.put("len", length);
 
-        // feed input into R process
-        engine.eval("input = data.frame()[1:inputLen, ]");
-        for (Map.Entry<String, ForecastInput> entry : forecastInput.entrySet()) {
-            String name = entry.getKey();
-            ForecastInput input = entry.getValue();
 
+        // Send input to R engine, convert to time series objects
+        // and then combine into data.frame.
+        engine.eval("library('tseries')");
+
+        engine.eval("input = data.frame()[1:inputLen, ]");
+        for(ForecastInput input:forecastInput) {
+            String name = input.getName();
             engine.put(name,input.getSeries());
             engine.eval(name + "_ts = ts(name, start = c(" + year + "," + month + "), frequency = freq)");
             engine.eval("input[\"" + name + "\"] = " + name + "_ts");
         }
 
-        // var estimated
-        // p selected using minimum AIC
-        engine.eval("p_optimum = VARselect(y, lag.max = 5, type = \"both\")$selection[0]");
-        engine.eval("var = VAR(input, p = p_optimum, type = \"both\"");
+        // Generate forecast values
+        if(model.equals("var")){
+            // load required R library
+            engine.eval("library('vars')");
 
-        //var used to forecast
-        engine.eval("forecast = predict(var, n.ahead = "+ length +", ci = 0.95)");
+            // var estimated
+            // p selected using minimum AIC
+            // no unit root test performed - since this is for forecasting only
+            engine.eval("p_optimum = VARselect(y, lag.max = 5, type = \"both\")$selection[1][[1]]");
+            engine.eval("var = VAR(input, p = p_optimum, type = \"both\"");
 
-        // forecast moved into java and assigned to forecastResult
+            //var used to forecast
+            engine.eval("forecast = predict(var, n.ahead = "+ length +", ci = 0.95)");
 
+            // extracting model description
+            StringVector descr = (StringVector) engine.eval("capture.output(summary(var))");
+            HashMap<String, String> forecastDescription = new HashMap<String, String>();
+            forecastDescription.put("VAR", descr.asString());
+            forecastResult.setForecastDescription(forecastDescription);
 
+            // extracting forecast values
+            HashMap<String, double[]> series = new HashMap<String, double[]>();
+            HashMap<String, double[]> upper = new HashMap<String, double[]>();
+            HashMap<String, double[]> lower = new HashMap<String, double[]>();
+            for(ForecastInput input:forecastInput) {
+                String name = input.getName();
+                DoubleVector forecastSeries = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"fcst\"]");
+                DoubleVector forecastUpper = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"upper\"]");
+                DoubleVector forecastLower = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"lower\"]");
+                series.put(name, forecastSeries.toDoubleArray());
+                upper.put(name, forecastUpper.toDoubleArray());
+                lower.put(name, forecastLower.toDoubleArray());
+            }
+            forecastResult.setSeries(series);
+            forecastResult.setUpper(upper);
+            forecastResult.setLower(lower);
 
+        } else {
+            // load required R library
+            engine.eval("library('forecast')");
 
+            // generate forecast values and extract in
+            HashMap<String, double[]> series = new HashMap<String, double[]>();
+            HashMap<String, double[]> upper = new HashMap<String, double[]>();
+            HashMap<String, double[]> lower = new HashMap<String, double[]>();
+            HashMap<String, String> forecastDescription = new HashMap<String, String>();
+            for(ForecastInput input:forecastInput) {
+                String name = input.getName();
+                engine.eval("library('forecast')");
+                engine.eval("frcst = forecast(auto.arima(input["+ name +"][,])");
 
+                DoubleVector forecastSeries = (DoubleVector)  = engine.eval("as.numeric(frcst$mean[])");
+                DoubleVector forecastUpper = (DoubleVector) = engine.eval("as.numeric(frcst$upper[,2])");
+                DoubleVector forecastLower = (DoubleVector) engine.eval("as.numeric(frcst$lower[,2])");
+                StringVector descr = (StringVector) engine.eval("frcst$model");
+                series.put(name, forecastSeries.toDoubleArray());
+                upper.put(name, forecastUpper.toDoubleArray());
+                lower.put(name, forecastLower.toDoubleArray());
+                forecastDescription.put(name, descr);
+            }
+        }
+
+        // Return built forecastResult object
         return forecastResult;
 
     }

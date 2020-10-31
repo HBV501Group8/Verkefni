@@ -1,14 +1,13 @@
 package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class ForecastInput {
 
     //TODO Bæta við nafni eða einhverjum identifyer - ef þarf til tengja við Forecast object
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
-    private double[] Series;
+    private double[] series;
     private LocalDate[] time;
 
     public ForecastInput() {
@@ -31,11 +30,11 @@ public class ForecastInput {
     }
 
     public double[] getSeries() {
-        return Series;
+        return series;
     }
 
     public void setSeries(double[] series) {
-        Series = series;
+        this.series = series;
     }
 
     public LocalDate[] getTime() {
