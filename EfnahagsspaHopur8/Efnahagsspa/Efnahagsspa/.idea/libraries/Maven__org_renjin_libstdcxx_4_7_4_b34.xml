@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin:libstdcxx:4.7.4-b34">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/libstdcxx/4.7.4-b34/libstdcxx-4.7.4-b34.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/libstdcxx/4.7.4-b34/libstdcxx-4.7.4-b34-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/libstdcxx/4.7.4-b34/libstdcxx-4.7.4-b34-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
