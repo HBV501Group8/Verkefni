@@ -19,6 +19,8 @@ public class Forecast {
     private long id;
 
     private String forecastName;
+
+    @Embedded
     public ForecastResult forecastResult;
 
     @OneToMany(mappedBy = "forecast", cascade = CascadeType.ALL)
