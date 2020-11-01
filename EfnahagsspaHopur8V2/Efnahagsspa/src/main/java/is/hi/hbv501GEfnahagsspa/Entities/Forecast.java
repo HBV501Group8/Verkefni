@@ -11,17 +11,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.*;
 
-@Table(name = "Fore_Cast")
+@Table(name = "Forecast")
 @Entity
 public class Forecast {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long forecastID;
-    private String forecastName;
+    private long id;
 
+    private String forecastName;
     public ForecastResult forecastResult;
-    @ElementCollection
-    private ArrayList<ForecastInput> forecastInput;
+
+    @OneToMany(mappedBy = "forecast", cascade = CascadeType.ALL)
+    private List<ForecastInput> forecastInput;
 
     public Forecast() {
 
@@ -50,11 +51,11 @@ public class Forecast {
         this.forecastResult = forecastResult;
     }
 
-    public ArrayList<ForecastInput> getForecastInput() {
+    public List<ForecastInput> getForecastInput() {
         return forecastInput;
     }
 
-    public void setForecastInput(ArrayList<ForecastInput> forecastInput) {
+    public void setForecastInput(List<ForecastInput> forecastInput) {
         this.forecastInput = forecastInput;
     }
 }

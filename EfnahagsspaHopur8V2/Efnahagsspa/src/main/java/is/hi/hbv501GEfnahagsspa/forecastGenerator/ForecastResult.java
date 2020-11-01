@@ -2,42 +2,49 @@ package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
 import org.springframework.data.annotation.Id;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 
-
+@Embeddable
 public class ForecastResult {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long forecastID;
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private long id;
 
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
 
-    @ElementCollection
-    //private HashMap<String, double[]> series;
-    private HashMap<String, double[]> series;
 
     @ElementCollection
-    private HashMap<String, double[]> lower;
+    //@CollectionTable(name = "series")
+    //@MapKeyColumn(name = "timeSeriesName")
+    //@Column(name = "series")
+    private Map<String, double[]> series = new HashMap<String,double[]>();
 
     @ElementCollection
-    private HashMap<String, double[]> upper;
+    //@CollectionTable(name = "lower")
+    //@MapKeyColumn(name = "timeSeriesName")
+    //@Column(name = "lower")
+    private Map<String, double[]> lower = new HashMap<String,double[]>();
 
     @ElementCollection
+    //@CollectionTable(name = "upper")
+    //@MapKeyColumn(name = "timeSeriesName")
+    //@Column(name = "upper")
+    private Map<String, double[]> upper = new HashMap<String,double[]>();
+
+    @ElementCollection
+    @OrderColumn
     private LocalDate[] time;
 
     private String forecastModel;
 
     @ElementCollection
-    private HashMap<String, String> forecastDescription;
-    @javax.persistence.Id
-    private String id;
+    private Map<String, String> forecastDescription = new HashMap<String, String>();
+
 
     public ForecastResult() {
     }
@@ -58,27 +65,27 @@ public class ForecastResult {
         this.frequency = frequency;
     }
 
-    public HashMap<String, double[]> getSeries() {
+    public Map<String, double[]> getSeries() {
         return series;
     }
 
-    public void setSeries(HashMap<String, double[]> series) {
+    public void setSeries(Map<String, double[]> series) {
         this.series = series;
     }
 
-    public HashMap<String, double[]> getLower() {
+    public Map<String, double[]> getLower() {
         return lower;
     }
 
-    public void setLower(HashMap<String, double[]> lower) {
+    public void setLower(Map<String, double[]> lower) {
         this.lower = lower;
     }
 
-    public HashMap<String, double[]> getUpper() {
+    public Map<String, double[]> getUpper() {
         return upper;
     }
 
-    public void setUpper(HashMap<String, double[]> upper) {
+    public void setUpper(Map<String, double[]> upper) {
         this.upper = upper;
     }
 
@@ -98,19 +105,13 @@ public class ForecastResult {
         this.forecastModel = forecastModel;
     }
 
-    public HashMap<String, String> getForecastDescription() {
+    public Map<String, String> getForecastDescription() {
         return forecastDescription;
     }
 
-    public void setForecastDescription(HashMap<String, String> forecastDescription) {
+    public void setForecastDescription(Map<String, String> forecastDescription) {
         this.forecastDescription = forecastDescription;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
-    public String getId() {
-        return id;
-    }
 }

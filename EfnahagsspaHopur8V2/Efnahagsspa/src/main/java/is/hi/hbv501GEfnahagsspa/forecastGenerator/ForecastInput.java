@@ -1,27 +1,34 @@
 package is.hi.hbv501GEfnahagsspa.forecastGenerator;
 
-import org.springframework.data.annotation.Id;
+import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
+import javax.persistence.Id;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.time.LocalDate;
 
-
+@Entity
 public class ForecastInput {
+    //@ManyToOne
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long forecastID;
+    private long InputId;
+
+    @ManyToOne
+    @JoinColumn(name="id")
+    private Forecast forecast;
 
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
+
     @ElementCollection
+    @OrderColumn
     private double[] series;
+
     @ElementCollection
+    @OrderColumn
     private LocalDate[] time;
-    @javax.persistence.Id
-    private String id;
+
 
     public ForecastInput() {
     }
@@ -58,11 +65,4 @@ public class ForecastInput {
         this.time = time;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
 }

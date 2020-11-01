@@ -10,6 +10,6 @@ public interface ForecastRepository extends JpaRepository<Forecast,Long> {
 
     Forecast save(Forecast forecast);
     void delete(Forecast forecast);
-    Optional<Forecast> findById(long id);
-    Optional<Forecast> findByforecastName(String forecastName);
+    Forecast findById(long id);
+    Forecast findByforecastName(String forecastName);
 }
