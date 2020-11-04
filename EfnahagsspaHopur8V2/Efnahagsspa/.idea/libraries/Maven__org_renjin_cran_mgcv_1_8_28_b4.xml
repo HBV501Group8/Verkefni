@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin.cran:mgcv:1.8-28-b4">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/mgcv/1.8-28-b4/mgcv-1.8-28-b4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/mgcv/1.8-28-b4/mgcv-1.8-28-b4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/mgcv/1.8-28-b4/mgcv-1.8-28-b4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
