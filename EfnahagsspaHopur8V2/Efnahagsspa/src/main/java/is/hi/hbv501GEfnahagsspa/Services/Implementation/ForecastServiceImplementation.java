@@ -12,9 +12,10 @@ import java.util.Optional;
 @Service
 public class ForecastServiceImplementation implements ForecastService {
 
-    @Autowired
+
     ForecastRepository repository;
 
+    @Autowired
     public ForecastServiceImplementation(ForecastRepository ForecastRepository) {
         this.repository = ForecastRepository;
     }
