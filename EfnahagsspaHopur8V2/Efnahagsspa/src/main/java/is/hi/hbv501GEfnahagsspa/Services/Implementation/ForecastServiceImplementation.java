@@ -7,6 +7,7 @@ import is.hi.hbv501GEfnahagsspa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,6 +33,11 @@ public class ForecastServiceImplementation implements ForecastService {
     @Override
     public Forecast findById(long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    public List<Forecast> findAll() {
+        return repository.findAll();
     }
 
     @Override

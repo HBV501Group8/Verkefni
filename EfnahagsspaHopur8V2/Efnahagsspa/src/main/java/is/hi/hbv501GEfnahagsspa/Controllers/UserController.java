@@ -5,12 +5,10 @@ import is.hi.hbv501GEfnahagsspa.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Optional;
 
 @Controller
 
@@ -111,6 +109,13 @@ public class UserController {
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String usersGET(Model model){
+        model.addAttribute("users", userService.findAll());
+        return "users";
+    }
+    // Þetta route er fyrir Admin Höndla notendur
+
+    @RequestMapping(value = "/users2", method = RequestMethod.GET)
+    public String usersGET2(Model model){
         model.addAttribute("users", userService.findAll());
         return "users";
     }
