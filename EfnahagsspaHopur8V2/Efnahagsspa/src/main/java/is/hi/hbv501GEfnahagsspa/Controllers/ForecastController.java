@@ -44,10 +44,10 @@ public class ForecastController {
         return "ShowImage";
     }
 
-    @RequestMapping(value = "/foreCast", method = RequestMethod.GET)
+    @RequestMapping(value = "/forecast", method = RequestMethod.GET)
     public String foreCast(Model model) {
 
-        model.addAttribute("forecasts", forecastService.findAll() );
+        model.addAttribute("forecasts", forecastService.findAll());
         return "foreCastSearch";
     }
 
