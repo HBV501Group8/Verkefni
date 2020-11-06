@@ -2,30 +2,25 @@ package is.hi.hbv501GEfnahagsspa.Entities;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Table(name = "ForecastInput")
 @Entity
 public class ForecastInput {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private long id;
 
-    @ManyToOne
-    //@JoinColumn(name="forecastId")
-    private Forecast forecast;
 
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
 
     @ElementCollection
     @OrderColumn
-    private double[] inputSeries;
+    private double[] series;
 
     @ElementCollection
     @OrderColumn
-    @Column(name = "inputTime")
-    private LocalDate[] inputTime;
+    @Column(name="InputTime", columnDefinition = "DATE")
+    private LocalDate[] time;
 
 
     public ForecastInput() {
@@ -48,19 +43,19 @@ public class ForecastInput {
     }
 
     public double[] getSeries() {
-        return inputSeries;
+        return series;
     }
 
     public void setSeries(double[] series) {
-        this.inputSeries = series;
+        this.series = series;
     }
 
     public LocalDate[] getTime() {
-        return inputTime;
+        return time;
     }
 
     public void setTime(LocalDate[] time) {
-        this.inputTime = time;
+        this.time = time.clone();
     }
 
 }

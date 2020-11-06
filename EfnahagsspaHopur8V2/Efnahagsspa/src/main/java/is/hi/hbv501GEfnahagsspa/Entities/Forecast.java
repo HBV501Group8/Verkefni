@@ -9,14 +9,17 @@ import java.util.List;
 public class Forecast {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="ID")
     private long id;
 
     private String forecastName;
 
-    @OneToMany(mappedBy = "forecast", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="Forecast_ID", nullable = false)
     private List<ForecastResult> forecastResults = new ArrayList<>();
 
-    @OneToMany(mappedBy = "forecast", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="Forecast_ID")
     private List<ForecastInput> forecastInputs = new ArrayList<>();
 
 

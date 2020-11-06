@@ -14,7 +14,7 @@ public class forecastPrufa {
                 "VLF", "Mannfjoldi_is", "Atvinnul_land", "Vara_ut");
 
         double[] gamla = prufa.getForecastInputs().get(0).getSeries();
-        double[] frcst = prufa.getForecastResults().get(0).getResultSeries();
+        double[] frcst = prufa.getForecastResults().get(0).getSeries();
 
         System.out.println("Gamla - VLF");
         for (double value : gamla) {
@@ -28,7 +28,7 @@ public class forecastPrufa {
         prufa = new ForecastGeneratorService("prufa", 8, "arima", "Atvinnul_land", "Mannfjoldi_is", "VLF", "Vara_ut");
 
         gamla = prufa.getForecastInputs().get(0).getSeries();
-        frcst = prufa.getForecastResults().get(0).getResultSeries();
+        frcst = prufa.getForecastResults().get(0).getSeries();
 
         System.out.println("Gamla - Atvinnuleys landsbyggð");
         for (double value : gamla) {

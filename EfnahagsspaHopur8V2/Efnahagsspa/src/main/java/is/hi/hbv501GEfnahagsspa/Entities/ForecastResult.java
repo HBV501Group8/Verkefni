@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Table(name = "ForecastResult")
 @Entity
 public class ForecastResult {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -15,13 +16,9 @@ public class ForecastResult {
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
 
-    @ManyToOne
-    //@JoinColumn(name="forecastId")
-    private Forecast forecast;
-
     @ElementCollection
     @OrderColumn
-    private double[] resultSeries;
+    private double[] series;
 
     @ElementCollection
     @OrderColumn
@@ -33,8 +30,8 @@ public class ForecastResult {
 
     @ElementCollection
     @OrderColumn
-    @Column(name = "resultTime")
-    private LocalDate[] resultTime;
+    @Column(name = "resultTime", columnDefinition = "DATE")
+    private LocalDate[] time;
 
     private String forecastModel;
 
@@ -61,20 +58,15 @@ public class ForecastResult {
         this.frequency = frequency;
     }
 
-    public Forecast getForecast() {
-        return forecast;
-    }
 
-    public void setForecast(Forecast forecast) {
-        this.forecast = forecast;
-    }
 
-    public double[] getResultSeries() {
-        return resultSeries;
+
+    public double[] getSeries() {
+        return series;
     }
 
     public void setSeries(double[] resultSeries) {
-        this.resultSeries = resultSeries;
+        this.series = resultSeries;
     }
 
     public double[] getLower() {
@@ -93,12 +85,12 @@ public class ForecastResult {
         this.upper = upper;
     }
 
-    public LocalDate[] getResultTime() {
-        return resultTime;
+    public LocalDate[] getTime() {
+        return time;
     }
 
     public void setTime(LocalDate[] resultTime) {
-        this.resultTime = resultTime;
+        this.time = resultTime.clone();
     }
 
     public String getForecastModel() {
