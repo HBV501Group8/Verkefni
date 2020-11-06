@@ -14,7 +14,7 @@ import java.util.*;
 public class Forecast {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long forecastId;
+    private long id;
 
     private String forecastName;
 
@@ -28,22 +28,14 @@ public class Forecast {
     public Forecast() {
     }
 
-    //TODO færa í controller!
+
     public Forecast(String forecastNme, int length, String model,
                     String ... seriesName) throws IOException, ScriptException {
-        ForecastGeneratorService forecastGeneratorService = new ForecastGeneratorService(forecastName, length, model,
-                seriesName);
-        this.forecastName = forecastGeneratorService.getForecastName();
-        this.forecastResults = forecastGeneratorService.getForecastResults();
-        this.forecastInputs = (ArrayList<ForecastInput>) forecastGeneratorService.getForecastInputs();
-    }
-
-    public long getForecastId() {
-        return forecastId;
-    }
-
-    public void setForecastId(long forecastId) {
-        this.forecastId = forecastId;
+        ForecastGeneratorService generatedForecast =
+                new ForecastGeneratorService(forecastName, length, model, seriesName);
+        this.forecastName = generatedForecast.getForecastName();
+        this.forecastResults = generatedForecast.getForecastResults();
+        this.forecastInputs = generatedForecast.getForecastInputs();
     }
 
     public String getForecastName() {

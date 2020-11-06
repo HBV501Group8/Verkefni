@@ -10,13 +10,13 @@ import java.time.LocalDate;
 public class ForecastResult {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long resultId;
+    private long id;
 
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
 
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="forecastId")
     private Forecast forecast;
 
     @ElementCollection
@@ -40,14 +40,6 @@ public class ForecastResult {
 
 
     public ForecastResult() {
-    }
-
-    public long getResultId() {
-        return resultId;
-    }
-
-    public void setResultId(long resultId) {
-        this.resultId = resultId;
     }
 
     public String getName() {

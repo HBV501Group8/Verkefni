@@ -12,10 +12,10 @@ public class ForecastInput {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long inputId;
+    private long Id;
 
     @ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="forecastId")
     private Forecast forecast;
 
     private String name;
