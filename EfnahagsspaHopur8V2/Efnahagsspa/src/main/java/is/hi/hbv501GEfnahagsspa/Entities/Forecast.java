@@ -1,13 +1,8 @@
 package is.hi.hbv501GEfnahagsspa.Entities;
 
 import javax.persistence.*;
-import javax.script.ScriptException;
-
-import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.*;
+import java.util.List;
 
 @Table(name = "Forecast")
 @Entity
@@ -19,24 +14,15 @@ public class Forecast {
     private String forecastName;
 
     @OneToMany(mappedBy = "forecast", cascade = CascadeType.ALL)
-    private List<ForecastResult> forecastResults;
+    private List<ForecastResult> forecastResults = new ArrayList<>();
 
     @OneToMany(mappedBy = "forecast", cascade = CascadeType.ALL)
-    private List<ForecastInput> forecastInputs;
+    private List<ForecastInput> forecastInputs = new ArrayList<>();
 
 
     public Forecast() {
     }
 
-
-    public Forecast(String forecastNme, int length, String model,
-                    String ... seriesName) throws IOException, ScriptException {
-        ForecastGeneratorService generatedForecast =
-                new ForecastGeneratorService(forecastName, length, model, seriesName);
-        this.forecastName = generatedForecast.getForecastName();
-        this.forecastResults = generatedForecast.getForecastResults();
-        this.forecastInputs = generatedForecast.getForecastInputs();
-    }
 
     public String getForecastName() {
         return forecastName;

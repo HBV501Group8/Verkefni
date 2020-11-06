@@ -1,11 +1,8 @@
 package is.hi.hbv501GEfnahagsspa.Entities;
-
-import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
-import javax.persistence.Id;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@Table(name = "ForecastInput")
 @Entity
 public class ForecastInput {
 
@@ -15,7 +12,7 @@ public class ForecastInput {
     private long Id;
 
     @ManyToOne
-    @JoinColumn(name="forecastId")
+    //@JoinColumn(name="forecastId")
     private Forecast forecast;
 
     private String name;
@@ -23,11 +20,12 @@ public class ForecastInput {
 
     @ElementCollection
     @OrderColumn
-    private double[] series;
+    private double[] inputSeries;
 
     @ElementCollection
     @OrderColumn
-    private LocalDate[] time;
+    @Column(name = "inputTime")
+    private LocalDate[] inputTime;
 
 
     public ForecastInput() {
@@ -50,19 +48,19 @@ public class ForecastInput {
     }
 
     public double[] getSeries() {
-        return series;
+        return inputSeries;
     }
 
     public void setSeries(double[] series) {
-        this.series = series;
+        this.inputSeries = series;
     }
 
     public LocalDate[] getTime() {
-        return time;
+        return inputTime;
     }
 
     public void setTime(LocalDate[] time) {
-        this.time = time;
+        this.inputTime = time;
     }
 
 }

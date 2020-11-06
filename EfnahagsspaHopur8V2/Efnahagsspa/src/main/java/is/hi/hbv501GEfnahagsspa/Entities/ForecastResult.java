@@ -5,7 +5,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 
-
+@Table(name = "ForecastResult")
 @Entity
 public class ForecastResult {
     @Id
@@ -16,12 +16,12 @@ public class ForecastResult {
     private String frequency; // m monthly, q quarterly, y yearly
 
     @ManyToOne
-    @JoinColumn(name="forecastId")
+    //@JoinColumn(name="forecastId")
     private Forecast forecast;
 
     @ElementCollection
     @OrderColumn
-    private double[] series;
+    private double[] resultSeries;
 
     @ElementCollection
     @OrderColumn
@@ -33,9 +33,12 @@ public class ForecastResult {
 
     @ElementCollection
     @OrderColumn
-    private LocalDate[] time;
+    @Column(name = "resultTime")
+    private LocalDate[] resultTime;
 
     private String forecastModel;
+
+    @Column(columnDefinition="longtext")
     private String forecastDescription;
 
 
@@ -66,12 +69,12 @@ public class ForecastResult {
         this.forecast = forecast;
     }
 
-    public double[] getSeries() {
-        return series;
+    public double[] getResultSeries() {
+        return resultSeries;
     }
 
-    public void setSeries(double[] series) {
-        this.series = series;
+    public void setSeries(double[] resultSeries) {
+        this.resultSeries = resultSeries;
     }
 
     public double[] getLower() {
@@ -90,12 +93,12 @@ public class ForecastResult {
         this.upper = upper;
     }
 
-    public LocalDate[] getTime() {
-        return time;
+    public LocalDate[] getResultTime() {
+        return resultTime;
     }
 
-    public void setTime(LocalDate[] time) {
-        this.time = time;
+    public void setTime(LocalDate[] resultTime) {
+        this.resultTime = resultTime;
     }
 
     public String getForecastModel() {

@@ -2,20 +2,17 @@ package is.hi.hbv501GEfnahagsspa.Controllers;
 
 
 import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
-import is.hi.hbv501GEfnahagsspa.Entities.ForecastInput;
 import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
-import is.hi.hbv501GEfnahagsspa.repositories.ForecastRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.script.ScriptException;
 import java.io.IOException;
-import java.util.ArrayList;
 
 @Controller
 public class ForecastController {
@@ -72,10 +69,7 @@ public class ForecastController {
         } else {
             forecastModel = "arima";
         }
-        Forecast forecast = new Forecast(name, length, forecastModel, input_1,
-                                        input_2, input_3, input_4);
-        forecastService.save(forecast);
-/*
+
         // Generates forecast
         ForecastGeneratorService generatedForecast =
                 new ForecastGeneratorService(name, length, forecastModel, input_1,
@@ -86,7 +80,7 @@ public class ForecastController {
         forecast.setForecastInputs(generatedForecast.getForecastInputs());
         forecast.setForecastResults(generatedForecast.getForecastResults());
         forecastService.save(forecast);
-        */
+
     }
 
 
