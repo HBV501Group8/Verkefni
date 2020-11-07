@@ -11,5 +11,6 @@ public interface ForecastService {
     Forecast findById(long id);
     Forecast findByForecastName(String forecastName);
     List<Forecast> findByForecastNameContaining(String forecastName);
+    List<Forecast> findAll();
 
 }

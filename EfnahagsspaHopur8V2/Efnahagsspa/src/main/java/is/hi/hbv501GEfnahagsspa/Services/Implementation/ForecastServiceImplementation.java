@@ -44,4 +44,9 @@ public class ForecastServiceImplementation implements ForecastService {
         return repository.findByForecastNameContaining(forecastName);
     }
 
+    @Override
+    public List<Forecast> findAll() {
+        return repository.findAll();
+    }
+
 }
