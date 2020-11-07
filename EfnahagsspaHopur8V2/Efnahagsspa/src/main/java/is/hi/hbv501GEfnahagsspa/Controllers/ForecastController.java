@@ -94,8 +94,8 @@ public class ForecastController {
     }
     @RequestMapping(value = "/forecastList", method = RequestMethod.GET)
     public String forecastsList(HttpServletRequest request, Model model, Forecast forecast){
-        //String forecastName = request.getParameter("forecastName");
-        model.addAttribute("forecasts", forecastService.findAll());
+        String forecastName = request.getParameter("forecastName");
+        model.addAttribute("forecasts", forecastService.findByForecastNameContaining(forecastName));
         return "forecast";
     }
 
