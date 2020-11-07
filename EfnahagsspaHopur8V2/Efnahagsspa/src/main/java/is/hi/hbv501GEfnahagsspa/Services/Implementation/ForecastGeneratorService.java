@@ -1,25 +1,18 @@
-package is.hi.hbv501GEfnahagsspa.forecastGenerator;
-import antlr.StringUtils;
-import is.hi.hbv501GEfnahagsspa.EfnahagsspaApplication;
+package is.hi.hbv501GEfnahagsspa.Services.Implementation;
+import is.hi.hbv501GEfnahagsspa.Entities.ForecastInput;
+import is.hi.hbv501GEfnahagsspa.Entities.ForecastResult;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.jsoup.helper.StringUtil;
 
 import org.renjin.sexp.DoubleVector;
-import org.renjin.sexp.StringVector;
-import org.renjin.sexp.Vector;
-import org.springframework.boot.SpringApplication;
 import org.renjin.script.*;
-import javax.persistence.ElementCollection;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -27,21 +20,20 @@ import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-public class ForecastBuilder {
+public class ForecastGeneratorService {
     private String forecastName;
-    private ForecastResult forecastResult;
-    private ArrayList<ForecastInput> forecastInput = new ArrayList<>();
+    private ArrayList<ForecastResult> forecastResults = new ArrayList<>();
+    private ArrayList<ForecastInput> forecastInputs = new ArrayList<>();
 
     //TODO klára fyrst föllin hér að neðan, útfæra svo þennan með köllum á þau
-    public ForecastBuilder(String forecastName, int length, String model,
-                           String ... seriesName) throws IOException, ScriptException{
-
+    public ForecastGeneratorService(String forecastName, int length, String model,
+                                    String ... seriesName) throws IOException, ScriptException{
         // asign name to forecast
         this.forecastName = forecastName;
 
         // Load required data from Statistics Iceland
         for(String name:seriesName) {
-            forecastInput.add(downloadInputData(name));
+            forecastInputs.add(downloadInputData(name));
         }
 
         //TODO EF bætt við tímaröðum með aðra tíðni en ársfjórðunglega þarf hér að
@@ -52,7 +44,7 @@ public class ForecastBuilder {
         LocalDate minMax = LocalDate.of(3000, 1, 1);
         LocalDate maxMin = LocalDate.of(1000, 1, 1);
 
-        for(ForecastInput input:forecastInput) {
+        for(ForecastInput input:forecastInputs) {
             LocalDate max = input.getTime()[input.getTime().length-1];
             LocalDate min = input.getTime()[0];
             if(max.compareTo(minMax) < 0) minMax = max;
@@ -62,7 +54,7 @@ public class ForecastBuilder {
 
         // Data newer than MinMax and older than MaxMin thrown out
         // length of inputs stored for future use
-        for(ForecastInput input:forecastInput) {
+        for(ForecastInput input:forecastInputs) {
             LocalDate[] temp_time = input.getTime();
             double[] temp_series = input.getSeries();
 
@@ -78,8 +70,8 @@ public class ForecastBuilder {
             input.setSeries(Arrays.copyOfRange(temp_series,min, max));
         }
 
-        String freq = this.forecastInput.get(0).getFrequency();
-        this.forecastResult = generateForecast(this.forecastInput, length, freq, model,
+        String freq = this.forecastInputs.get(0).getFrequency();
+        this.forecastResults = generateForecast(this.forecastInputs, length, freq, model,
                 minMax, maxMin);
     }
 
@@ -88,12 +80,12 @@ public class ForecastBuilder {
     }
 
 
-    public ForecastResult getForecastResult() {
-        return forecastResult;
+    public List<ForecastResult> getForecastResults() {
+        return forecastResults;
     }
 
-    public List<ForecastInput> getForecastInput() {
-        return forecastInput;
+    public List<ForecastInput> getForecastInputs() {
+        return forecastInputs;
     }
 
 
@@ -238,7 +230,6 @@ public class ForecastBuilder {
             series[i] = Double.parseDouble(temp.get("values").toString()
                     .replaceAll("[\\[\"\\]]", ""));
 
-            //System.out.println(LocalDate.parse("2020Q2", format));
             Matcher matcher = quarter.matcher(temp.get("key").toString());
             if (matcher.find()) {
                 try {
@@ -279,29 +270,20 @@ public class ForecastBuilder {
     // model er bara hvaða módel á að nota (var eða arima)
     // maxMin á að vera sá tími úr inputs sem er hæstur af þeim sem eru lægstir
     // minMax er sá tími úr inputs sem er lægstur af þeim sem eru hæstir
-    public ForecastResult generateForecast(ArrayList<ForecastInput> forecastInput, int length,
+    public ArrayList<ForecastResult> generateForecast(ArrayList<ForecastInput> forecastInput, int length,
                                            String frequency, String model, LocalDate minMax,
-                                           LocalDate maxMin)
-            throws ScriptException {
+                                           LocalDate maxMin) throws ScriptException {
 
         // Define ForecastResult object to return
-        ForecastResult forecastResult = new ForecastResult();
+        ArrayList<ForecastResult> forecastResults = new ArrayList<>();
 
-        // set attributes given by parameters
-        forecastResult.setForecastModel(model);
-        forecastResult.setFrequency(frequency);
-
-
-
-        // Define general variables needed in R script
-        // freq, month and year are needed in ts()
-        // inputLen is needed to define data.frame
-        // length is needed to define length of forecast in R
+        // Define general variables needed in R script freq, month and year are needed in ts()
+        // inputLen is needed to define data.frame length is needed to define length of forecast in R
         int month = maxMin.getMonthValue();
         int year = maxMin.getYear();
         int inputLen = forecastInput.get(0).getSeries().length;
-        // get freq parameter to pass to R engine
-        // also compute LocalDate array for forecast time period
+
+        // Get freq parameter to pass to R engine and compute LocalDate array for forecast time period
         int freq;
         LocalDate[] time = new LocalDate[length];
         if(frequency.equals("m")) {
@@ -322,8 +304,6 @@ public class ForecastBuilder {
             }
         }
 
-        // Add time to forecastResult
-        forecastResult.setTime(time);
 
         // Start R JVM engine
         RenjinScriptEngineFactory factory = new RenjinScriptEngineFactory();
@@ -333,7 +313,6 @@ public class ForecastBuilder {
         engine.put("inputLen", inputLen);
         engine.put("freq", freq);
         engine.put("len", length);
-
 
         // Send input to R engine, convert to time series objects
         // and then combine into data.frame.
@@ -368,38 +347,53 @@ public class ForecastBuilder {
             engine.getContext().setWriter(descrWriter);
             engine.eval("print(var)");
             String descr = descrWriter.toString();
-            HashMap<String, String> forecastDescription = new HashMap<String, String>();
-            forecastDescription.put("VAR", descr);
-            forecastResult.setForecastDescription(forecastDescription);
 
-            // extracting forecast values
-            HashMap<String, double[]> series = new HashMap<String, double[]>();
-            HashMap<String, double[]> upper = new HashMap<String, double[]>();
-            HashMap<String, double[]> lower = new HashMap<String, double[]>();
+            // creating ForecastResult objects using VAR output from R engine
             for(ForecastInput input:forecastInput) {
+
+                // Extract name of input in order to assign to forecastResult
                 String name = input.getName();
+
+                // Define ForecastResult object to store model forecast for input time series
+                ForecastResult forecastResult = new ForecastResult();
+
+                // Set forecastResult attributes already within to Java scope
+                forecastResult.setName(name);
+                forecastResult.setForecastModel(model);
+                forecastResult.setFrequency(frequency);
+                forecastResult.setTime(time);
+                forecastResult.setForecastDescription(descr);
+
+                // Set forecastResult attributes which need to be extracted from R engine
                 DoubleVector forecastSeries = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"fcst\"]");
                 DoubleVector forecastUpper = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"upper\"]");
                 DoubleVector forecastLower = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"lower\"]");
-                series.put(name, forecastSeries.toDoubleArray());
-                upper.put(name, forecastUpper.toDoubleArray());
-                lower.put(name, forecastLower.toDoubleArray());
-            }
-            forecastResult.setSeries(series);
-            forecastResult.setUpper(upper);
-            forecastResult.setLower(lower);
+                forecastResult.setSeries(forecastSeries.toDoubleArray());
+                forecastResult.setUpper(forecastSeries.toDoubleArray());
+                forecastResult.setLower(forecastSeries.toDoubleArray());
 
+                // Add forecastResult to forecastResults list
+                forecastResults.add(forecastResult);
+            }
         } else {
             // load required R library
             engine.eval("library('crayon')");
             engine.eval("library('forecast')");
-            // generate forecast values and extract in
-            HashMap<String, double[]> series = new HashMap<String, double[]>();
-            HashMap<String, double[]> upper = new HashMap<String, double[]>();
-            HashMap<String, double[]> lower = new HashMap<String, double[]>();
-            HashMap<String, String> forecastDescription = new HashMap<String, String>();
+
+            // generate forecast values for each input and extract results from R engine
             for(ForecastInput input:forecastInput) {
+
+                // Extract name of input in order to assign to forecastResult
                 String name = input.getName();
+
+                // Define ForecastResult object to store model forecast for input time series
+                ForecastResult forecastResult = new ForecastResult();
+
+                // Set forecastResult attributes already within to Java scope
+                forecastResult.setName(name);
+                forecastResult.setForecastModel(model);
+                forecastResult.setFrequency(frequency);
+                forecastResult.setTime(time);
 
                 // Run forecast estimation in R engine
                 engine.eval("frcst = forecast(auto.arima(input[\""+ name +"\"]), h ="+ length +")");
@@ -415,22 +409,18 @@ public class ForecastBuilder {
                 engine.eval("print(frcst$model)");
                 String descr = descrWriter.toString();
 
-                series.put(name, forecastSeries.toDoubleArray());
-                upper.put(name, forecastUpper.toDoubleArray());
-                lower.put(name, forecastLower.toDoubleArray());
-                forecastDescription.put(name, descr);
-            }
+                // Assign values from R engine to forecastResult object
+                forecastResult.setSeries(forecastSeries.toDoubleArray());
+                forecastResult.setUpper(forecastSeries.toDoubleArray());
+                forecastResult.setLower(forecastSeries.toDoubleArray());
+                forecastResult.setForecastDescription(descr);
 
-            forecastResult.setSeries(series);
-            forecastResult.setUpper(upper);
-            forecastResult.setLower(lower);
-            forecastResult.setForecastDescription(forecastDescription);
+                // Add forecastResult to forecastResults list
+                forecastResults.add(forecastResult);
+            }
         }
 
-        // Return built forecastResult object
-        return forecastResult;
-
+        // Return list of forecastResult objects
+        return forecastResults;
     }
-
-
 }

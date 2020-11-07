@@ -22,6 +22,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAll();
     // Ná í notanda eftir lykilorði
    User findByuserPassword(String userPassword);
+   List<User> findUsersByUserNameContaining(String userName);
 
 
 }

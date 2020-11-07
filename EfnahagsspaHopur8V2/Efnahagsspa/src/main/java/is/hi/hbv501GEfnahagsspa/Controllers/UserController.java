@@ -5,10 +5,12 @@ import is.hi.hbv501GEfnahagsspa.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 @Controller
 
@@ -59,7 +61,7 @@ public class UserController {
             user.setUserPassword(password);
             user.setEmail(Email);
             user.setEnabled(true);
-            user.setAdmin(false);
+            user.setAdmin(true);
             userService.save(user);
         }
 
@@ -114,12 +116,17 @@ public class UserController {
     }
     // Þetta route er fyrir Admin Höndla notendur
 
-    @RequestMapping(value = "/users2", method = RequestMethod.GET)
-    public String usersGET2(Model model){
-        model.addAttribute("users", userService.findAll());
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public String usersGET2(Model model,User user){
+        //model.addAttribute("users", userService.findUsersByUserNameContaining()
+        return "userSearch";
+    }
+    @RequestMapping(value = "/userList", method = RequestMethod.GET)
+    public String usersList(HttpServletRequest request,Model model,User user){
+        String userName = request.getParameter("userName");
+        model.addAttribute("users", userService.findUsersByUserNameContaining(userName));
         return "users";
     }
-
     // Route fyrir að eyða notanda samkvæmt ID
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)

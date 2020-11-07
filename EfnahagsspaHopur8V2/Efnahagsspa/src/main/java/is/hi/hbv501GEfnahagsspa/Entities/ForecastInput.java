@@ -1,22 +1,14 @@
-package is.hi.hbv501GEfnahagsspa.forecastGenerator;
-
-import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
-import javax.persistence.Id;
-
+package is.hi.hbv501GEfnahagsspa.Entities;
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 public class ForecastInput {
-    //@ManyToOne
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long InputId;
+    private long id;
 
-    @ManyToOne
-    @JoinColumn(name="id")
-    private Forecast forecast;
 
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
@@ -27,6 +19,7 @@ public class ForecastInput {
 
     @ElementCollection
     @OrderColumn
+    @Column(name="InputTime", columnDefinition = "DATE")
     private LocalDate[] time;
 
 
@@ -62,7 +55,7 @@ public class ForecastInput {
     }
 
     public void setTime(LocalDate[] time) {
-        this.time = time;
+        this.time = time.clone();
     }
 
 }

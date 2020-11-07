@@ -14,11 +14,13 @@ public interface UserService {
     User findById(long id);
     // Ná í alla notendur
     List<User> findAll();
+
     // Ná í notanda eftir notandanafni
     User findByuserName(String userName);
     // Ná í notanda eftir lykilorði
     User findByuserPassword(String userPassword);
 
+    List<User> findUsersByUserNameContaining(String userName);
 
 
 }

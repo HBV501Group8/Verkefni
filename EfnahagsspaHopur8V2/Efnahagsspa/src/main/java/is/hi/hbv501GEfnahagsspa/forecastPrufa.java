@@ -1,6 +1,6 @@
 package is.hi.hbv501GEfnahagsspa;
 
-import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
+import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
 
 import javax.script.ScriptException;
 import java.io.IOException;
@@ -9,11 +9,12 @@ public class forecastPrufa {
 
     public static void main(String[] args) throws IOException, ScriptException {
 
-        Forecast prufa = new Forecast("prufa", 8, "var",
+        ForecastGeneratorService prufa =
+                new ForecastGeneratorService("prufa", 8, "var",
                 "VLF", "Mannfjoldi_is", "Atvinnul_land", "Vara_ut");
 
-        double[] gamla = prufa.getForecastInput().get(0).getSeries();
-        double[] frcst = prufa.getForecastResult().getSeries().get("VLF");
+        double[] gamla = prufa.getForecastInputs().get(0).getSeries();
+        double[] frcst = prufa.getForecastResults().get(0).getSeries();
 
         System.out.println("Gamla - VLF");
         for (double value : gamla) {
@@ -24,10 +25,10 @@ public class forecastPrufa {
             System.out.println(v);
         }
 
-        prufa = new Forecast("prufa", 8, "arima", "Atvinnul_land", "Mannfjoldi_is", "VLF", "Vara_ut");
+        prufa = new ForecastGeneratorService("prufa", 8, "arima", "Atvinnul_land", "Mannfjoldi_is", "VLF", "Vara_ut");
 
-        gamla = prufa.getForecastInput().get(0).getSeries();
-        frcst = prufa.getForecastResult().getSeries().get("Atvinnul_land");
+        gamla = prufa.getForecastInputs().get(0).getSeries();
+        frcst = prufa.getForecastResults().get(0).getSeries();
 
         System.out.println("Gamla - Atvinnuleys landsbyggð");
         for (double value : gamla) {

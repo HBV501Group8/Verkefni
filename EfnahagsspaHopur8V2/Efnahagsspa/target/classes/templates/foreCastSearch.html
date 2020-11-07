@@ -3,134 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Users</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
     <style>
-        table {
-            border-spacing: 1;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 6px;
-            overflow: hidden;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
-            position: relative;
-        }
-        table * {
-            position: relative;
-        }
-        table td, table th {
-            padding-left: 8px;
-        }
-        table thead tr {
-            height: 60px;
-            background: #FFED86;
-            font-size: 16px;
-        }
-        table tbody tr {
-            height: 48px;
-            border-bottom: 1px solid #E3F1D5;
-        }
-        table tbody tr:last-child {
-            border: 0;
-        }
-        table td, table th {
-            text-align: left;
-        }
-        table td.l, table th.l {
-            text-align: right;
-        }
-        table td.c, table th.c {
-            text-align: center;
-        }
-        table td.r, table th.r {
-            text-align: center;
+        .form-control-borderless {
+            border: none;
         }
 
-        @media screen and (max-width: 35.5em) {
-            table {
-                display: block;
-            }
-            table > *, table tr, table td, table th {
-                display: block;
-            }
-            table thead {
-                display: none;
-            }
-            table tbody tr {
-                height: auto;
-                padding: 8px 0;
-            }
-            table tbody tr td {
-                padding-left: 45%;
-                margin-bottom: 12px;
-            }
-            table tbody tr td:last-child {
-                margin-bottom: 0;
-            }
-            table tbody tr td:before {
-                position: absolute;
-                font-weight: 700;
-                width: 40%;
-                left: 10px;
-                top: 0;
-            }
-            table tbody tr td:nth-child(1):before {
-                content: "Code";
-            }
-            table tbody tr td:nth-child(2):before {
-                content: "Stock";
-            }
-            table tbody tr td:nth-child(3):before {
-                content: "Cap";
-            }
-            table tbody tr td:nth-child(4):before {
-                content: "Inch";
-            }
-            table tbody tr td:nth-child(5):before {
-                content: "Box Type";
-            }
+        .form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+            border: none;
+            outline: none;
+            box-shadow: none;
         }
-        body {
-            background: #9BC86A;
-            font: 400 14px 'Calibri','Arial';
-            padding: 20px;
-        }
-
-        blockquote {
-            color: white;
-            text-align: center;
-        }
-
     </style>
-</head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
 <body>
-<div th:switch="${forecasts}">
-    <h2 th:case="null">No forecasts yet!</h2>
-    <div th:case="*">
-
-
-        <table>
-            <thead>
-            <tbody>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-
-            </tr>
-
-            <tr th:each="forecast : ${forecasts}">
-                <td th:text="${forecast.id}"></td>
-                <td th:text="${forecast.name}"></td>
-
-            </tr>
-            </tbody>
-            </thead>
-        </table>
-
+<div class="container">
+    <br/>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <form class="card card-sm" th:action="@{/userList}">
+                <div class="card-body row no-gutters align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-search h4 text-body"></i>
+                    </div>
+                    <!--end of col-->
+                    <div class="col">
+                        <input id="forecastName" name="forecastName" class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search topics or keywords">
+                    </div>
+                    <!--end of col-->
+                    <div class="col-auto">
+                        <button class="btn btn-lg btn-success" type="submit">Search</button>
+                    </div>
+                    <!--end of col-->
+                </div>
+            </form>
+        </div>
+        <!--end of col-->
     </div>
 </div>
-
-
 </body>
 </html>

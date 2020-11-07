@@ -3,31 +3,30 @@ package is.hi.hbv501GEfnahagsspa.Services.Implementation;
 import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
 import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.repositories.ForecastRepository;
-import is.hi.hbv501GEfnahagsspa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ForecastServiceImplementation implements ForecastService {
 
-    @Autowired
+
     ForecastRepository repository;
 
-    public ForecastServiceImplementation(ForecastRepository ForecastRepository) {
-        this.repository = ForecastRepository;
+    @Autowired
+    public ForecastServiceImplementation(ForecastRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Forecast save(Forecast foreCast) {
-        return repository.save(foreCast);
+    public Forecast save(Forecast forecast) {
+        return repository.save(forecast);
     }
 
     @Override
-    public void delete(Forecast foreCast) {
-        repository.delete(foreCast);
+    public void delete(Forecast forecast) {
+        repository.delete(forecast);
     }
 
     @Override
@@ -36,12 +35,13 @@ public class ForecastServiceImplementation implements ForecastService {
     }
 
     @Override
-    public List<Forecast> findAll() {
-        return repository.findAll();
+    public Forecast findByForecastName(String forecastName) {
+        return repository.findByForecastName(forecastName);
     }
 
     @Override
-    public Forecast findByforecastName(String forecastName) {
-        return  repository.findByforecastName(forecastName);
+    public List<Forecast> findByForecastNameContaining(String forecastName) {
+        return repository.findByForecastNameContaining(forecastName);
     }
+
 }

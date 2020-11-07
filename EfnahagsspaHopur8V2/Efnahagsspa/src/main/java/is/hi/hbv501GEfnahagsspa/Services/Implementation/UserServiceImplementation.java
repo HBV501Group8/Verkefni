@@ -52,6 +52,11 @@ public class UserServiceImplementation implements UserService {
 
     }
 
+    @Override
+    public List<User> findUsersByUserNameContaining(String userName) {
+        return  repository.findUsersByUserNameContaining(userName);
+    }
+
 
 }
 
