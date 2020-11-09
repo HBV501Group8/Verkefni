@@ -1,6 +1,7 @@
 package is.hi.hbv501GEfnahagsspa.Controllers;
 
 import is.hi.hbv501GEfnahagsspa.Entities.User;
+import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,8 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -17,20 +21,28 @@ import java.util.Optional;
 public class UserController {
 
     private UserService userService;
+    private ForecastService  forecastService;
 
     @Autowired
 
     // Smiður binda user service
 
-    public UserController( UserService userService){
+    public UserController( UserService userService, ForecastService forecastService)
+    {
         this.userService = userService;
+        this.forecastService = forecastService;
+
     }
-    @Autowired
+    //@Autowired
 
     // Route á login
 
-    @RequestMapping("/")
-    public String Home() {
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String Home(User user) {
+
+
+
+
         return "testLogin";
     }
     // Route á nýskráningu  notanda
@@ -61,12 +73,16 @@ public class UserController {
             user.setUserPassword(password);
             user.setEmail(Email);
             user.setEnabled(true);
-            user.setAdmin(true);
+            user.setAdmin(false);
             userService.save(user);
         }
 
         return "testLogin";
     }
+
+
+
+
 
     // Þetta route vinnur úr login notanda
 
@@ -96,7 +112,8 @@ public class UserController {
         if(userexists!=null && passswexists!=null)  {
             // Ef notandi er Admin
             if(!blnadmin) {
-                return "showImage";
+                model.addAttribute("forecasts", forecastService.findAll());
+                return "forecast";
             }
             else {
                 // Fara yfir á admin
@@ -184,6 +201,8 @@ public class UserController {
         model.addAttribute("users", userService.findAll());
         return "users";
     }
+
+
 }
 
 
