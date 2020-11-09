@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -112,27 +113,32 @@ public class ForecastController {
         //model.addAttribute("movies", movieService.findAll() );
         return "forecastform";
     }
-    @RequestMapping(value = "/data", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String makeData(User user,Model model) throws IOException, ScriptException {
 
+        List<Forecast> list = new ArrayList<>();
+        list = forecastService.findAll();
+        if (list.isEmpty()) {
+            user.setName("Sigurjón Ólafsson");
+            user.setUserName("Sigurjon");
+            user.setUserPassword("test");
+            user.setEmail("sigurjon@textor.is");
+            user.setEnabled(true);
+            user.setAdmin(false);
+            userService.save(user);
+            User user2 = new User();
+            user2.setName("Sigurjón Ólafsson2");
+            user2.setUserName("admin");
+            user2.setUserPassword("admintest");
+            user2.setEmail("sigurjon@textor.is");
+            user2.setEnabled(true);
+            user2.setAdmin(true);
+            userService.save(user2);
+            generateDummy(model);
+            generateDummy(model);
+            return "testLogin";
 
-        user.setName("Sigurjón Ólafsson");
-        user.setUserName("Sigurjon");
-        user.setUserPassword("test");
-        user.setEmail("sigurjon@textor.is");
-        user.setEnabled(true);
-        user.setAdmin(false);
-        userService.save(user);
-        User user2 = new User();
-        user2.setName("Sigurjón Ólafsson2");
-        user2.setUserName("admin");
-        user2.setUserPassword("admintest");
-        user2.setEmail("sigurjon@textor.is");
-        user2.setEnabled(true);
-        user2.setAdmin(true);
-        userService.save(user2);
-        generateDummy(model);
-        generateDummy(model);
+        }
         return "testLogin";
     }
 }

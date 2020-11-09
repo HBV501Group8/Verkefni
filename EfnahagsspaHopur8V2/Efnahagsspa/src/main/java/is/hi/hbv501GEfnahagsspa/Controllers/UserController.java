@@ -37,7 +37,7 @@ public class UserController {
 
     // Route á login
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String Home(User user) {
 
 
