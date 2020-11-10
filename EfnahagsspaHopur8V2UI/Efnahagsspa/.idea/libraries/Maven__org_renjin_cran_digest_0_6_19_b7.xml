@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin.cran:digest:0.6.19-b7">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/digest/0.6.19-b7/digest-0.6.19-b7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/digest/0.6.19-b7/digest-0.6.19-b7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/digest/0.6.19-b7/digest-0.6.19-b7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
