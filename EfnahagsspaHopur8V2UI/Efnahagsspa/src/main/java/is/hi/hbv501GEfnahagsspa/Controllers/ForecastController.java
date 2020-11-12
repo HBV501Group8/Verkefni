@@ -2,31 +2,23 @@ package is.hi.hbv501GEfnahagsspa.Controllers;
 
 
 import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
-import is.hi.hbv501GEfnahagsspa.Entities.User;
 import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
-import is.hi.hbv501GEfnahagsspa.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-//import sun.text.resources.cldr.ext.FormatData_ewo;
 
 import javax.script.ScriptException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class ForecastController {
 
     @Autowired
     private ForecastService forecastService;
-    @Autowired
-    private UserService userService;
 
 
     @RequestMapping(value = "/forecast/{id}", method = RequestMethod.GET)
@@ -92,55 +84,13 @@ public class ForecastController {
     }
 
 
-    @RequestMapping(value = "/forecastsearch", method = RequestMethod.GET)
-    public String forecastSearch(Model model) {
+    @RequestMapping(value = "/graph", method = RequestMethod.GET)
+    public String Graph(Model model) {
 
         //model.addAttribute("movies", movieService.findAll() );
-        return "forecastSearch";
-    }
-    @RequestMapping(value = "/forecastList", method = RequestMethod.GET)
-    public String forecastsList(HttpServletRequest request, Model model, Forecast forecast){
-        String forecastName = request.getParameter("forecastName");
-        model.addAttribute("forecasts", forecastService.findByForecastNameContaining(forecastName));
-        return "forecast";
+        return "ShowImage";
     }
 
 
 
-    @RequestMapping(value = "/show", method = RequestMethod.GET)
-    public String forecastview(Model model) {
-
-        //model.addAttribute("movies", movieService.findAll() );
-        return "forecastform";
-    }
-    // Búa til gögn
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String makeData(User user,Model model) throws IOException, ScriptException {
-
-        List<Forecast> list = new ArrayList<>();
-        list = forecastService.findAll();
-        if (list.isEmpty()) {
-            user.setName("Sigurjón Ólafsson");
-            user.setUserName("Sigurjon");
-            user.setUserPassword("test");
-            user.setEmail("sigurjon@textor.is");
-            user.setEnabled(true);
-            user.setAdmin(false);
-            userService.save(user);
-            User user2 = new User();
-            user2.setName("Sigurjón Ólafsson2");
-            user2.setUserName("admin");
-            user2.setUserPassword("admintest");
-            user2.setEmail("sigurjon@textor.is");
-            user2.setEnabled(true);
-            user2.setAdmin(true);
-            userService.save(user2);
-            generateDummy(model);
-            generateDummy(model);
-            return "testLogin";
-
-        }
-        return "testLogin";
-    }
 }

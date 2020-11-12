@@ -6,8 +6,6 @@ import is.hi.hbv501GEfnahagsspa.repositories.ForecastRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ForecastServiceImplementation implements ForecastService {
 
@@ -38,15 +36,4 @@ public class ForecastServiceImplementation implements ForecastService {
     public Forecast findByForecastName(String forecastName) {
         return repository.findByForecastName(forecastName);
     }
-
-    @Override
-    public List<Forecast> findByForecastNameContaining(String forecastName) {
-        return repository.findByForecastNameContaining(forecastName);
-    }
-
-    @Override
-    public List<Forecast> findAll() {
-        return repository.findAll();
-    }
-
 }

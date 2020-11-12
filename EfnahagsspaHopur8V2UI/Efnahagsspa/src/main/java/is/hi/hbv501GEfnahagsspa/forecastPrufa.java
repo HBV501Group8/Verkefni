@@ -1,8 +1,12 @@
 package is.hi.hbv501GEfnahagsspa;
 
+import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
 import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
 
 import javax.script.ScriptException;
+import java.io.File;
 import java.io.IOException;
 
 public class forecastPrufa {
@@ -25,10 +29,13 @@ public class forecastPrufa {
             System.out.println(v);
         }
 
-        prufa = new ForecastGeneratorService("prufa", 8, "arima", "Atvinnul_land", "Mannfjoldi_is", "VLF", "Vara_ut");
+        String[] arguments = {"Atvinnul_land", "Mannfjoldi_is", "VLF", "Vara_ut"};
+        prufa = new ForecastGeneratorService("prufa", 8, "arima",
+                                            arguments);
 
         gamla = prufa.getForecastInputs().get(0).getSeries();
         frcst = prufa.getForecastResults().get(0).getSeries();
+        double[] frcstUpper = prufa.getForecastResults().get(0).getUpper();
 
         System.out.println("Gamla - Atvinnuleys landsbyggð");
         for (double value : gamla) {
@@ -38,5 +45,22 @@ public class forecastPrufa {
         for (double v : frcst) {
             System.out.println(v);
         }
+        for (double v: frcstUpper){
+            System.out.println(v);
+        }
+
+        Forecast prufa2 = new Forecast();
+        prufa2.setForecastName(prufa.getForecastName());
+        prufa2.setForecastResults(prufa.getForecastResults());
+        prufa2.setForecastInputs(prufa.getForecastInputs());
+        JFreeChart chart = prufa2.drawForecast("Vara_ut");
+
+        File file = new File("images/test.jpeg");
+        try {
+            ChartUtilities.saveChartAsJPEG(file, chart,1400, 800);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

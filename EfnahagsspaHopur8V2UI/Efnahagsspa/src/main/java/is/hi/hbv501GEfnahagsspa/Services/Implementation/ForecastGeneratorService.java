@@ -4,15 +4,13 @@ import is.hi.hbv501GEfnahagsspa.Entities.ForecastResult;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import org.renjin.script.RenjinScriptEngineFactory;
 import org.renjin.sexp.DoubleVector;
-import org.renjin.script.*;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -369,8 +367,8 @@ public class ForecastGeneratorService {
                 DoubleVector forecastUpper = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"upper\"]");
                 DoubleVector forecastLower = (DoubleVector) engine.eval("forecast$fcst$"+ name +"[,\"lower\"]");
                 forecastResult.setSeries(forecastSeries.toDoubleArray());
-                forecastResult.setUpper(forecastSeries.toDoubleArray());
-                forecastResult.setLower(forecastSeries.toDoubleArray());
+                forecastResult.setUpper(forecastUpper.toDoubleArray());
+                forecastResult.setLower(forecastLower.toDoubleArray());
 
                 // Add forecastResult to forecastResults list
                 forecastResults.add(forecastResult);
@@ -411,8 +409,8 @@ public class ForecastGeneratorService {
 
                 // Assign values from R engine to forecastResult object
                 forecastResult.setSeries(forecastSeries.toDoubleArray());
-                forecastResult.setUpper(forecastSeries.toDoubleArray());
-                forecastResult.setLower(forecastSeries.toDoubleArray());
+                forecastResult.setUpper(forecastUpper.toDoubleArray());
+                forecastResult.setLower(forecastLower.toDoubleArray());
                 forecastResult.setForecastDescription(descr);
 
                 // Add forecastResult to forecastResults list
