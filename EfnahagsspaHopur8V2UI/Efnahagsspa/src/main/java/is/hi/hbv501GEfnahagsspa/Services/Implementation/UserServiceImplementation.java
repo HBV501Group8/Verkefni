@@ -13,44 +13,87 @@ public class UserServiceImplementation implements UserService {
 
     UserRepository repository;
 
-    // Binda repository í smið
+
 
     @Autowired
     public UserServiceImplementation(UserRepository userRepository) {
         this.repository = userRepository;
     }
 
-    // Stofna eða uppfæra notanda
+    /**
+     * @param user hlutur af taginu User
+     * @return kall á fallið save úr userRepository með user
+     */
+
     @Override
+
     public User save(User user) {
         return repository.save(user);
     }
-    // Eyða notanda
+
+    /**
+     * @param user hlutur af taginu User
+     * @return kall á fallið eyða úr userRepository með user
+     */
+
     @Override
     public void delete(User user) {
         repository.delete(user);
     }
-    // Finna notanda eftir id
+
+    /**
+     * @param user hlutur af taginu User
+     * @param id sem er lykill notnada
+     * @return kall á fallið findById
+     */
+
+
     @Override
     public User findById(long id) {
         return repository.findById(id);
     }
-    // Ná í alla notendur
+
+    /**
+     * @param user listi af hlutum af taginu User
+     * @return kall á fallið findAll()
+     */
+
     @Override
     public List<User> findAll() {
         return repository.findAll();
     }
-    // Ná í notanda eftir notandanafni
+
+    /**
+     * @param user hlutur af taginu User
+     * @param userName er nafn notada
+     * @return kall á fallið findByUSerName();
+     */
+
+
     @Override
     public User findByuserName(String userName) {
         return repository.findByuserName(userName);
     }
-    // Ná í notanda eftir lykilorði
+
+    /**
+     * @param user hlutur af taginu User
+     * @param userPassword er lykilorð notada
+     * @return kall á fallið findByUSerPassword();
+     */
+
+
     @Override
     public User findByuserPassword(String userPassword) {
         return repository.findByuserPassword(userPassword);
 
     }
+
+    /**
+     * @param user hlutur af taginu User
+     * @param userName er notandanafn
+     * @return kall á fallið findUsersByUserNameContaining(userName);
+     */
+
 
     @Override
     public List<User> findUsersByUserNameContaining(String userName) {

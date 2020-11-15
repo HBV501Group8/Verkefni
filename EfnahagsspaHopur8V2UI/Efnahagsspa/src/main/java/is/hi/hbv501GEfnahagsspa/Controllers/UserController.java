@@ -35,17 +35,28 @@ public class UserController {
     }
     //@Autowired
 
-    // Route á login
+    /**
+     * Grípur fyrirspurn login sem birtir Login template
+     * @param user hlutur af taginu User sem geymir email og lykilorð sem var slegið inn
+     * @return endursendum notandann aftur á rót vefs
+     */
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String Home(User user) {
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String Home(User user,HttpSession session) {
 
-
+        session.setAttribute("loggedInUser","");
+        session.setAttribute("userType", "");
 
         return "testLogin";
     }
-    // Route á nýskráningu  notanda
+
+    /**
+     * Grípur fyrirspurn þegar notandi er nýskráður
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @return endursendum notandann aftur á rót vefs
+     */
+
 
     @RequestMapping("/register")
     public String register(Model model) {
@@ -53,7 +64,20 @@ public class UserController {
     }
 
 
-    // Skrá nýja notanda í gangagrunn
+    /**
+     * Grípur fyrirspurn þegar notandi er nýskráður
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @param user hlutur af taginu User sem geymir email og lykilorð sem var slegið inn
+     * @return endursendum notandann aftur á rót vefs
+     */
+
+    /**
+     * Grípur fyrirspurn þegar notandi er nýskráður
+     * @param user hlutur af taginu User sem geymir email og lykilorð sem var slegið inn
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @param session hlutur af taginu HttpSession sem geymir key-value pör
+     * @return Notandi er endursendur á login síðu
+     */
 
     @RequestMapping(value = "/registeruser", method = RequestMethod.POST)
     public String userregister(HttpServletRequest request, Model model, HttpSession session, User user) {
@@ -67,7 +91,7 @@ public class UserController {
         User userexists =  userService.findByuserName(userName);
         User passwordexists =  userService.findByuserPassword(password);
         // Ef notandi er þegar til er ekkert gert
-        if(userexists==null && passwordexists==null) {
+        if(userexists==null) {
             user.setName(Name);
             user.setUserName(userName);
             user.setUserPassword(password);
@@ -83,8 +107,14 @@ public class UserController {
 
 
 
-
-    // Þetta route vinnur úr login notanda
+    /**
+     * Grípur fyrirspurn þegar notandi er authenticated
+     * @param user hlutur af taginu User sem geymir email og lykilorð sem var slegið inn
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @param session hlutur af taginu HttpSession sem geymir key-value pör
+     * @return ef result hefur engar villur þá endursendum við notandann á heimasvæðið ef hann er ekki admin
+     * annars er farið í notandastýringu
+     */
 
     @RequestMapping(value = "/logintest", method = RequestMethod.POST)
     public String userlogin(User user,HttpServletRequest request, Model model, HttpSession session) {
@@ -112,11 +142,20 @@ public class UserController {
         if(userexists!=null && passswexists!=null)  {
             // Ef notandi er Admin
             if(!blnadmin) {
+                session.setAttribute("loggedInUser", userexists.userName);
+                session.setAttribute("userType", "user");
+                String userlogged = (String) session.getAttribute("loggedInUser");
                 model.addAttribute("forecasts", forecastService.findAll());
+                model.addAttribute("userlogged", userlogged);
+
                 return "forecast";
             }
             else {
                 // Fara yfir á admin
+                session.setAttribute("loggedInUser", userexists.userName);
+                session.setAttribute("userType", "admin");
+                String userlogged = (String) session.getAttribute("loggedInUser");
+                model.addAttribute("userlogged", userlogged);
                 model.addAttribute("users", userService.findAll());
                 return "users";
                 }
@@ -124,20 +163,38 @@ public class UserController {
         return "testLogin";
     }
 
-    // Þetta route er fyrir Admin Höndla notendur
+    /**
+     * Grípur fyrirspurn eftir að admin er innskárður
+     * @param user hlutur af taginu User sem mun geyma email og password í innskráningu
+     * @return strengur skilar admin á yfirlit notenda
+     */
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String usersGET(Model model){
         model.addAttribute("users", userService.findAll());
         return "users";
     }
-    // Þetta route er fyrir Admin Höndla notendur
-
+    /**
+     * Grípur fyrirspurn þegar admin vill leita í nteondum
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @param user hlutur af taginu User sem mun geyma email og password í innskráningu
+     * @return strengur sem er nafnið á html síðunni sem verður birt
+     */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public String usersGET2(Model model,User user){
         //model.addAttribute("users", userService.findUsersByUserNameContaining()
         return "userSearch";
     }
+
+    /**
+     * Grípur fyrirspurn sem birtir notandalista efit leit
+     * @param user hlutur af taginu User sem geymir email og lykilorð sem var slegið inn
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @param session hlutur af taginu HttpSession sem geymir key-value pör
+     * @return ef result hefur engar villur þá endursendum við notandann á heimasvæðið annars leyfum við honum að
+     *         reyna að logga sig inn aftur
+     */
+
     @RequestMapping(value = "/userList", method = RequestMethod.GET)
     public String usersList(HttpServletRequest request,Model model,User user){
         String userName = request.getParameter("userName");
@@ -158,7 +215,13 @@ public class UserController {
         return "users";
     }
 
-    //Þetta route er til að birta breyta notanda form
+    /**
+     * Grípur fyrirspurn þegar notandi er eyddur
+     * @param id er lykill notanda til að eyða
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @return endursenda admin á yfirlistsíðu
+     */
+
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String usersedit(@PathVariable("id") String strid,HttpServletRequest request,Model model){
@@ -167,7 +230,13 @@ public class UserController {
         return "test";
     }
 
-    // Uppfæra notanda
+    /**
+     * Grípur fyrirspurn þegar notandi er uppfærður af admin
+     * @param user hlutur af taginu User sem geymir email og lykilorð sem var slegið inn
+     * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum
+     * @param session hlutur af taginu HttpSession sem geymir key-value pör
+     * @return Endursenda admin á yfirlitsíðu
+     */
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.GET)
     public String userupdate(HttpServletRequest request, Model model, HttpSession session, User user) {
@@ -179,6 +248,8 @@ public class UserController {
         String userName = request.getParameter("userName");
         String password = request.getParameter("userPassword");
         String isEnabled = request.getParameter("isEnabled");
+        if(isEnabled==null)
+            isEnabled="";
         Boolean isAdmin = Boolean.parseBoolean(request.getParameter("isAdmin"));
         // Kalla á uppfæra notendur
         User userUpdate =  userService.findByuserName(userName);
@@ -189,10 +260,10 @@ public class UserController {
 
         // Uppfæra hvort notnndi sé virkur
 
-        String strcheck = isEnabled;
-        if(strcheck.equals("on"))
+
+        if(isEnabled.equals("on"))
             userUpdate.setEnabled(true);
-        if(!strcheck.equals("on"))
+        if(!isEnabled.equals("on"))
             userUpdate.setEnabled(false);
 
         userService.save(userUpdate);

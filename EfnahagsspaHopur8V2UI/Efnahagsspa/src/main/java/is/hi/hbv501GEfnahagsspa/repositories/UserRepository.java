@@ -10,19 +10,60 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    // Stofna eða uppfæra notanda
+    /**
+     * Vistar notanda í gagnagrunn
+     *
+     * @param user sem á að vista
+     * @return Notandi hefur verið vistaður
+     */
     User save(User user);
-    // Eyða notanda
+    /**
+     * Eyðir notanda úr gagnagrunn
+     *
+     * @param id lykill spá sem á að eyða
+     * @return spá hefur verið eydd
+     */
     void delete(User user);
-    // Finna nptanda eftir id
+    /**
+     * Nær í spá  spá úr gagnagrunn
+     *
+     * @param id lykill spá sem á að ná í
+     * @return skilar spá
+     */
+
     User findById(long id);
-    //Finna notanda eftir notandanafni
+
+    /**
+     * Leitar eftir nafni notanda
+     *
+     * @param userName er nafn sem á að leita eftir
+     * @return Skilar notanda
+     */
     User findByuserName(String userName);
-    // Ná í alla notendur
+
+    /**
+     * Nær í allar spár úr gagnagrunn
+     *
+     * @param
+     * @return Skilar lista af spám
+     */
     List<User> findAll();
 
-    // Ná í notanda eftir lykilorði
+    /**
+     * Nær í spár eftir lykilorði
+     *
+     * @param
+     * @return Skilar notanda
+     */
+
    User findByuserPassword(String userPassword);
+
+    /**
+     * Nær í spár eftir lykilorði
+     *
+     * @param
+     * @return Skilar notanda
+     */
    List<User> findUsersByUserNameContaining(String userName);
 
 
