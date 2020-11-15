@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="is">
+<html xmlns:th="http://www.thymeleaf.org"
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Spásmiður</title>
+</head>
+<body>
+    <main>
+        <h1><a>Spásmiður</a></h1>
+        <form method="post">
+            <ul>
+                <label>Nafn á spá:</label>
+                <input type="text" maxlength="255" value=""/>
+            </ul>
+            <ul>
+                <label>Lengd:</label>
+                <input type="number" min="1" max="12" step="1"/>
+            </ul>
+            <label>Tegund spalikans: </label>
+            <ul>
+                <input type="radio" value="1" />
+                <label>VAR</label>
+                <input type="radio" value="2" />
+                <label>ARIMA</label>
+            </ul>
+            <label>Veldu tímaraðir:</label>
+            <ul>
+                <input type="checkbox" value="1" />
+                <label>Fjöldi íslenskra ríkisborgara</label>
+                <input type="checkbox" value="2" />
+                <label>Fjöld erlendra ríkisborgara</label>
+                <input type="checkbox" value="3" />
+                <label>Atvinnuleysi</label>
+                <input type="checkbox" value="4" />
+                <label>Atvinnleysi í Reykavík</label>
+                <input type="radio" value="5" />
+                <label>Einkaneysla</label>
+                <input type="checkbox" value="6" />
+                <label>Samneysla</label>
+                <input type="checkbox" value="7" />
+                <label>Fjármunamyndun</label>
+                <input type="checkbox" value="8" />
+                <label>Útfluttningur vara</label>
+                <input type="checkbox" value="9" />
+                <label>Innflutningur vara</label>
+                <input type="checkbox" value="10" />
+                <label>Útflutningur þjónustu</label>
+                <input type="checkbox" value="11" />
+                <label>Innflutningur þjónustu</label>
+                <input type="checkbox" value="12" />
+                <label>Verg landsframleiðsla</label>
+            </ul>
+        </form>
+        <button>Búa til spá</button>
+    </main>
+</body>
+</html>
+
+
