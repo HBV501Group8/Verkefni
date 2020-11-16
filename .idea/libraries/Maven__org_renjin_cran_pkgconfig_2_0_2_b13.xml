@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin.cran:pkgconfig:2.0.2-b13">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/pkgconfig/2.0.2-b13/pkgconfig-2.0.2-b13.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/pkgconfig/2.0.2-b13/pkgconfig-2.0.2-b13-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/pkgconfig/2.0.2-b13/pkgconfig-2.0.2-b13-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

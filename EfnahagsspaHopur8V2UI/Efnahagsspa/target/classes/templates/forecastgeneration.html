@@ -9,51 +9,51 @@
 <body>
     <main>
         <h1><a>Spásmiður</a></h1>
-        <form method="post">
+        <form action=forecastgeneration method="post">
             <ul>
                 <label>Nafn á spá:</label>
-                <input type="text" maxlength="255" value=""/>
+                <input type="text" name="forecastname" maxlength="255"/>
             </ul>
             <ul>
                 <label>Lengd:</label>
-                <input type="number" min="1" max="12" step="1"/>
+                <input type="number" name="length" min="1" max="12" step="1"/>
             </ul>
             <label>Tegund spalikans: </label>
             <ul>
-                <input type="radio" value="1" />
+                <input type="radio" name="forecastmodel" value="var" checked="checked"/>
                 <label>VAR</label>
-                <input type="radio" value="2" />
+                <input type="radio" name="forecastmodel" value="arima" />
                 <label>ARIMA</label>
             </ul>
             <label>Veldu tímaraðir:</label>
             <ul>
-                <input type="checkbox" value="1" />
+                <input type="checkbox" name="seriesNames" value="Mannfjoldi_is" />
                 <label>Fjöldi íslenskra ríkisborgara</label>
-                <input type="checkbox" value="2" />
+                <input type="checkbox" name="seriesNames" value="Mannfjoldi_erl" />
                 <label>Fjöld erlendra ríkisborgara</label>
-                <input type="checkbox" value="3" />
+                <input type="checkbox" name="seriesNames" value="Atvinnul_rvk" />
                 <label>Atvinnuleysi</label>
-                <input type="checkbox" value="4" />
+                <input type="checkbox" name="seriesNames" value="Atvinnul_land" />
                 <label>Atvinnleysi í Reykavík</label>
-                <input type="radio" value="5" />
+                <input type="checkbox" name="seriesNames" value="Einkaneysla" />
                 <label>Einkaneysla</label>
-                <input type="checkbox" value="6" />
+                <input type="checkbox" name="seriesNames" value="Samneysla" />
                 <label>Samneysla</label>
-                <input type="checkbox" value="7" />
+                <input type="checkbox" name="seriesNames" value="Fjarmunamyndun" />
                 <label>Fjármunamyndun</label>
-                <input type="checkbox" value="8" />
+                <input type="checkbox" name="seriesNames" value="Vara_ut" />
                 <label>Útfluttningur vara</label>
-                <input type="checkbox" value="9" />
+                <input type="checkbox" name="seriesNames" value="Vara_inn" />
                 <label>Innflutningur vara</label>
-                <input type="checkbox" value="10" />
+                <input type="checkbox" name="seriesNames" value="Thjonusta_ut" />
                 <label>Útflutningur þjónustu</label>
-                <input type="checkbox" value="11" />
+                <input type="checkbox" name="seriesNames" value="Thjonusta_inn" />
                 <label>Innflutningur þjónustu</label>
-                <input type="checkbox" value="12" />
+                <input type="checkbox" name="seriesNames" value="VLF" />
                 <label>Verg landsframleiðsla</label>
             </ul>
+            <button type="submit">Búa til spá</input>
         </form>
-        <button>Búa til spá</button>
     </main>
 </body>
 </html>

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.script.ScriptException;
 import java.io.IOException;
@@ -37,24 +38,37 @@ public class ForecastController {
         return forecastService.findById(Integer.parseInt(id));
     }
 
+
+
+
+    /**
+     * Grípur fyrirspurnir um spásmið view.
+     * @return Skilar forecastgeneration view
+     */
+    @RequestMapping(value = "forecastgeneration", method = RequestMethod.GET)
+    public String forecastForm(Model model){
+        return "forecastgeneration";
+    }
+
     /**
      * Grípur fyrirspurn til að búa til spá.
      * @param name er nafn spár
-     * @param length er :
-     * @param model er af tagi Model
-     * @param seriesName er :
-     * @return Skilar Forecast efrtir ID
+     * @param length er lengt spár
+     * @param model er spálíkan sem notað er við gerð spár
+     * @param seriesNames eru tímaraðir sem gera á spá fyrir
+     * @return Skilar forecastview með forcast sem var búið til
      */
-
-
-    @RequestMapping(value = "/forecast/generate/{name}/{length}/{model}/{seriesName}",
-            method = RequestMethod.GET)
-    public void generateForecast(@PathVariable("name") String name, @PathVariable("length") int length,
-                                 @PathVariable("model") String forecastModel, @PathVariable("seriesName") String seriesName)
-                                throws IOException, ScriptException {
+    //TODO breyta void í String! Þegar view er komið.
+    @RequestMapping(value = "forecastgeneration", method = RequestMethod.POST)
+    public void generateForecast(@RequestParam(value = "forecastname") String name,
+                                 @RequestParam(value = "length") int length,
+                                 @RequestParam(value = "forecastmodel") String forecastModel,
+                                 @RequestParam(value = "seriesNames") String[] seriesNames,
+                                 Model model)
+            throws IOException, ScriptException {
         // Generator service called to build Forecast object
         ForecastGeneratorService generatedForecast =
-                            new ForecastGeneratorService(name, length, forecastModel, seriesName);
+                new ForecastGeneratorService(name, length, forecastModel, seriesNames);
         // Forecast entity created and values from ForecastGenerator assigned to it
         Forecast forecast = new Forecast();
         forecast.setForecastName(generatedForecast.getForecastName());
@@ -64,6 +78,8 @@ public class ForecastController {
         // Vista strax, tökum svo líklega út.. Viljum líklega vista með sér klasa
         // er bara hérna núna til að geta sent gögn inn i gagnagrunn og prófað
         forecastService.save(forecast);
+
+        //return forecastview;
     }
     /**
      * Grípur fyrirspurn til að búa til spá inn í töflu

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin.cran:plyr:1.8.4-b104">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/plyr/1.8.4-b104/plyr-1.8.4-b104.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/plyr/1.8.4-b104/plyr-1.8.4-b104-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/plyr/1.8.4-b104/plyr-1.8.4-b104-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

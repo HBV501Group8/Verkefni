@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin.cran:utf8:1.1.4-b24">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/utf8/1.1.4-b24/utf8-1.1.4-b24.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/utf8/1.1.4-b24/utf8-1.1.4-b24-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/utf8/1.1.4-b24/utf8-1.1.4-b24-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
