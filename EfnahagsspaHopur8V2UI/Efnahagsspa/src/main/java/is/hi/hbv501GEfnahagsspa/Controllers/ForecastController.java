@@ -6,6 +6,8 @@ import is.hi.hbv501GEfnahagsspa.Entities.User;
 import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
 import is.hi.hbv501GEfnahagsspa.Services.UserService;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.script.ScriptException;
+import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,18 +32,22 @@ public class ForecastController {
     @Autowired
     private UserService userService;
 
+
     /**
      * Grípur fyrirspurn þegar notandinn nær í spá
      * @param id er lykill spár í gagnagrunni
      * @return Skilar Forecast efrtir ID
      */
-
+/*
     @RequestMapping(value = "/forecast/{id}", method = RequestMethod.GET)
     public Forecast getForecast(@PathVariable("id") String id){
         return forecastService.findById(Integer.parseInt(id));
     }
+*/
+    /*@RequestMapping(value = "forecastupdate", method = RequestMethod.GET)
+    public String updateForecast(Model model){
 
-
+    }*/
 
 
     /**
@@ -47,6 +56,7 @@ public class ForecastController {
      */
     @RequestMapping(value = "forecastgeneration", method = RequestMethod.GET)
     public String forecastForm(Model model){
+
         return "forecastgeneration";
     }
 
@@ -58,12 +68,14 @@ public class ForecastController {
      * @param seriesNames eru tímaraðir sem gera á spá fyrir
      * @return Skilar forecastview með forcast sem var búið til
      */
-    //TODO breyta void í String! Þegar view er komið.
+    // TODO Setja inn exception ef ólöglegt val og þá bara return redirect:/ eða módel og uppfylling
+    // með einhverjum hints (mega ekki vera xxx....)
     @RequestMapping(value = "forecastgeneration", method = RequestMethod.POST)
-    public void generateForecast(@RequestParam(value = "forecastname") String name,
+    public String generateForecast(@RequestParam(value = "forecastname") String name,
                                  @RequestParam(value = "length") int length,
                                  @RequestParam(value = "forecastmodel") String forecastModel,
                                  @RequestParam(value = "seriesNames") String[] seriesNames,
+                                 HttpSession session,
                                  Model model)
             throws IOException, ScriptException {
         // Generator service called to build Forecast object
@@ -74,13 +86,49 @@ public class ForecastController {
         forecast.setForecastName(generatedForecast.getForecastName());
         forecast.setForecastInputs(generatedForecast.getForecastInputs());
         forecast.setForecastResults(generatedForecast.getForecastResults());
-        //TODO
-        // Vista strax, tökum svo líklega út.. Viljum líklega vista með sér klasa
-        // er bara hérna núna til að geta sent gögn inn i gagnagrunn og prófað
+
+        // Save forecast to database
         forecastService.save(forecast);
 
-        //return forecastview;
+        // Keeps track of forecast being viewed in session
+        // seriesCounter is used to keep track of the series being viewed
+        session.setAttribute("activeForecast", forecast);
+        session.setAttribute("seriesCounter", 0);
+
+
+        // Draw forecast chart
+        JFreeChart chart = forecast.drawForecast(forecast.getForecastResults().get(0).getName());
+
+        //TODO breyta þessu þannig að geymist sem user name ekki name á series
+
+        // Save chart for display on next view
+        File file = new File("EfnahagsspaHopur8V2UI/Efnahagsspa/src/main/resources/templates/forecastcharts/"
+                              + forecast.getForecastName() + ".jpeg");
+        try {
+            ChartUtilities.saveChartAsJPEG(file, chart,700, 400);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //TODO replace with get userID and pass to model instead
+        model.addAttribute("forecastName", forecast.getForecastName() +".jpeg");
+
+        // Add forecast result and input to model in order to display as table
+        // in next view
+        double[] forecastResultSeries = forecast.getForecastResults().get(0).getSeries();
+        LocalDate[] forecastResultTime = forecast.getForecastResults().get(0).getTime();
+        double[] forecastInputSeries =  forecast.getForecastInputs().get(0).getSeries();
+        LocalDate[] forecastInputTime = forecast.getForecastInputs().get(0).getTime();
+        model.addAttribute("forecastResultSeries", forecastResultSeries);
+        model.addAttribute("forecastResultTime", forecastResultTime);
+        model.addAttribute("forecastInputSeries", forecastInputSeries);
+        model.addAttribute("forecastInputTime", forecastInputTime);
+
+        return "viewforecast";
     }
+
+
+
     /**
      * Grípur fyrirspurn til að búa til spá inn í töflu
      * @param model hlutur af taginu Model sem geymir key-value pör sem hægt er að nota í html template-unum

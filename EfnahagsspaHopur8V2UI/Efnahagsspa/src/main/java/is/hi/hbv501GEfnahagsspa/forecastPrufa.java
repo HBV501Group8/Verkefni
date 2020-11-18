@@ -55,7 +55,7 @@ public class forecastPrufa {
         prufa2.setForecastInputs(prufa.getForecastInputs());
         JFreeChart chart = prufa2.drawForecast("Vara_ut");
 
-        File file = new File("images/test.jpeg");
+        File file = new File("EfnahagsspaHopur8V2UI/Efnahagsspa/src/main/resources/templates/forecastcharts/test.jpeg");
         try {
             ChartUtilities.saveChartAsJPEG(file, chart,1400, 800);
         } catch (IOException e) {
