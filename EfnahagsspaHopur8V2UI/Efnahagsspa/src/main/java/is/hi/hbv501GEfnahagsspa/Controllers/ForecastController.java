@@ -102,7 +102,7 @@ public class ForecastController {
         //TODO breyta þessu þannig að geymist sem user name ekki name á series
 
         // Save chart for display on next view
-        File file = new File("EfnahagsspaHopur8V2UI/Efnahagsspa/src/main/resources/static/images/"
+        File file = new File("EfnahagsspaHopur8V2UI/Efnahagsspa/target/classes/static/images/"
                               + forecast.getForecastName() + ".jpeg");
         try {
             ChartUtilities.saveChartAsJPEG(file, chart,700, 400);
