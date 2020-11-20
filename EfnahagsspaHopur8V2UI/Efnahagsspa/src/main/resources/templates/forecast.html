@@ -36,6 +36,8 @@
 </div>
 -->
 <h5 style="text-align: center;"><b>Skráður inn sem <span th:text="${userlogged}"></span></b><a th:href="@{/logout}">&nbsp;&nbsp;&nbsp; Útskra</a></h5>
+<a th:href="@{/forecastgeneration}">Create forecast</a>
+
 <div id="searchResults">
     <div th:switch="${forecasts}">
         <h2 th:case="null">No forecasts yet!</h2>
@@ -56,6 +58,7 @@
 
                     <td th:text="${forecast.forecastName}"></td>
                     <td><a th:href="@{/show}">Show</a></td>
+
 
                 </tr>
                 </tbody>

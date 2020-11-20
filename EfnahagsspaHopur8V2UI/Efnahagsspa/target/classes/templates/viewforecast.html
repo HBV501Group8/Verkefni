@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="is">
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./styles.css">
-    <title>Spásmiður</title>
+    <title>Spá</title>
 </head>
 <body>
     <main>
-        <button>Næsta</button>
-        <button>Fyrri</button>
-        <button>Til baka</button>
-        <button>Uppfæra spá</button>
-    <div>
+
+        <a href="/forecastgeneration">Til baka</a>
+        <a href="/forecastgeneration">Uppfæra spá</a>
         <div>
-            <img src="../images/lineChart.jpeg" />
+            <img th:src="@{../images/{image}(image=${forecastName})}">
         </div>
+        <a href="/projects">Næsta breyta</a>
+        <a href="/projects">Fyrri breyta</a>
+        <h2>Spá</h2>
+        <table>
+            <tr th:each="index : ${#numbers.sequence( 0, forecastResultSeries.length - 1)}">
+                <td th:text="${forecastResultTime[index]}"></td>
+                <td th:text="${forecastResultSeries[index]}"></td>
+            </tr>
+        </table>
+        <h2>Tímaröð</h2>
+        <table>
+            <tr th:each="index : ${#numbers.sequence( 0, forecastInputSeries.length - 1)}">
+                <td th:text="${forecastInputTime[index]}"></td>
+                <td th:text="${forecastInputSeries[index]}"></td>
+            </tr>
+        </table>
     </main>
 </body>
 </html>
