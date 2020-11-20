@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin:graphics:3.5-beta44">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/graphics/3.5-beta44/graphics-3.5-beta44.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/graphics/3.5-beta44/graphics-3.5-beta44-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/graphics/3.5-beta44/graphics-3.5-beta44-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

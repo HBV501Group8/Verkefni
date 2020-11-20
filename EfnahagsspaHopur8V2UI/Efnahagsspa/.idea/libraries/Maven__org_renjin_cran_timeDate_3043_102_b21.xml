@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.renjin.cran:timeDate:3043.102-b21">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/timeDate/3043.102-b21/timeDate-3043.102-b21.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/timeDate/3043.102-b21/timeDate-3043.102-b21-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/renjin/cran/timeDate/3043.102-b21/timeDate-3043.102-b21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
