@@ -11,18 +11,15 @@ import org.jfree.chart.JFreeChart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.script.ScriptException;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Controller
 public class ForecastController {
@@ -32,7 +29,23 @@ public class ForecastController {
     @Autowired
     private UserService userService;
 
-
+    // Lookup table with information on Icelandic series names
+    // this is needed since the R engine won't accept variables with icelandic names
+    private static final Map<String, String> seriesNameLookup = new HashMap<String, String>();
+    {
+        seriesNameLookup.put("Mannfjoldi_is","Fjöldi íslenskra ríkisborgara");
+        seriesNameLookup.put("Mannfjoldi_erl","Fjöldi erlendra ríkisborgara");
+        seriesNameLookup.put("Atvinnul_rvk","Atvinnuleysi í Reykjavík");
+        seriesNameLookup.put("Atvinnul_land","Atvinnuleysi");
+        seriesNameLookup.put("Einkaneysla","Einkaneysla");
+        seriesNameLookup.put("Samneysla","Samneysla");
+        seriesNameLookup.put("Fjarmunamyndun","Fjármunamyndun");
+        seriesNameLookup.put("Vara_ut","Útflutningur vara");
+        seriesNameLookup.put("Vara_inn","Innflutningur vara");
+        seriesNameLookup.put("Thjonusta_ut","Útflutningur þjónustu");
+        seriesNameLookup.put("Thjonusta_inn","Innflutningur þjónustu");
+        seriesNameLookup.put("VLF","Verg landsframleiðsla");
+    }
     /**
      * Grípur fyrirspurn þegar notandinn nær í spá
      * @param id er lykill spár í gagnagrunni
@@ -58,6 +71,53 @@ public class ForecastController {
     public String forecastForm(Model model){
 
         return "forecastgeneration";
+    }
+
+    @RequestMapping(value = "updateforecast", method = RequestMethod.GET)
+    public String forecastForm(HttpSession session, Model model) throws IOException, ScriptException{
+
+        // Load old forecast and retrieve attributes
+        Forecast oldForecast = (Forecast) session.getAttribute("activeForecast");
+        String name = oldForecast.getForecastName();
+        int length = oldForecast.getForecastInputs().get(0).getSeries().length;
+        String forecastModel = oldForecast.getForecastResults().get(0).getForecastModel();
+
+        String[] seriesNames = new String[oldForecast.getForecastResults().size()];
+        for(int i = 0; i < seriesNames.length; i++) {
+            seriesNames[i] = oldForecast.getForecastInputs().get(i).getName();
+        }
+
+        // Generate new forecast with same attributes
+        ForecastGeneratorService generatedForecast =
+                new ForecastGeneratorService(name, length, forecastModel, seriesNames);
+
+        Forecast newForecast = new Forecast();
+        newForecast.setForecastName(generatedForecast.getForecastName());
+        newForecast.setForecastInputs(generatedForecast.getForecastInputs());
+        newForecast.setForecastResults(generatedForecast.getForecastResults());
+        newForecast.setGeneratedTime(LocalDateTime.now());
+
+        // Delete old forecast, save new forecast
+        forecastService.delete(oldForecast);
+        forecastService.save(newForecast);
+
+        // Display new forecast to forecast view
+
+        // Keeps track of forecast being viewed in session
+        session.setAttribute("activeForecast", newForecast);
+
+        // Adds forecast name and time of generation to model in order to display in view
+        model.addAttribute("forecastName", newForecast.getForecastName());
+        model.addAttribute("forecastTime",newForecast.getGeneratedTime());
+
+        // Adds seriesNames to model in order to generate tabs
+        for(int i = 0; i < seriesNames.length; i++) {
+            seriesNames[i] = seriesNameLookup.get(newForecast.getForecastResults().get(i).getName());
+        }
+        model.addAttribute("seriesNames", seriesNames);
+
+        return "viewforecast";
+
     }
 
     /**
@@ -86,48 +146,62 @@ public class ForecastController {
         forecast.setForecastName(generatedForecast.getForecastName());
         forecast.setForecastInputs(generatedForecast.getForecastInputs());
         forecast.setForecastResults(generatedForecast.getForecastResults());
-
+        forecast.setGeneratedTime(LocalDateTime.now());
         // Save forecast to database
         forecastService.save(forecast);
 
         // Keeps track of forecast being viewed in session
-        // seriesCounter is used to keep track of the series being viewed
         session.setAttribute("activeForecast", forecast);
-        session.setAttribute("seriesCounter", 0);
 
+        // Adds forecast name and time of generation to model in order to display in view
+        model.addAttribute("forecastName", forecast.getForecastName());
+        model.addAttribute("forecastTime",forecast.getGeneratedTime());
+
+        // Adds seriesNames to model in order to generate tabs
+        String[] names = new String[forecast.getForecastResults().size()];
+        for(int i = 0; i < names.length; i++) {
+            names[i] = seriesNameLookup.get(forecast.getForecastResults().get(i).getName());
+        }
+        model.addAttribute("seriesNames", names);
+
+        return "viewforecast";
+    }
+
+    @RequestMapping(value = "forecastresult/{seriesNumber}", method = RequestMethod.GET)
+    public String forecastResult(@PathVariable int seriesNumber,
+                                 Model model,
+                                 HttpSession session){
+
+        Forecast forecast = (Forecast) session.getAttribute("activeForecast");
+
+        model.addAttribute("forecastName", forecast.getForecastResults().get(seriesNumber).getName() +".jpeg");
 
         // Draw forecast chart
-        JFreeChart chart = forecast.drawForecast(forecast.getForecastResults().get(0).getName());
+        JFreeChart chart = forecast.drawForecast(forecast.getForecastResults().get(seriesNumber).getName());
 
         //TODO breyta þessu þannig að geymist sem user name ekki name á series
 
         // Save chart for display on next view
         File file = new File("EfnahagsspaHopur8V2UI/Efnahagsspa/target/classes/static/images/"
-                              + forecast.getForecastName() + ".jpeg");
+                + forecast.getForecastResults().get(seriesNumber).getName() + ".jpeg");
         try {
             ChartUtilities.saveChartAsJPEG(file, chart,700, 400);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        //TODO replace with get userID and pass to model instead
-        model.addAttribute("forecastName", forecast.getForecastName() +".jpeg");
-
         // Add forecast result and input to model in order to display as table
         // in next view
-        double[] forecastResultSeries = forecast.getForecastResults().get(0).getSeries();
-        LocalDate[] forecastResultTime = forecast.getForecastResults().get(0).getTime();
-        double[] forecastInputSeries =  forecast.getForecastInputs().get(0).getSeries();
-        LocalDate[] forecastInputTime = forecast.getForecastInputs().get(0).getTime();
+        double[] forecastResultSeries = forecast.getForecastResults().get(seriesNumber).getSeries();
+        LocalDate[] forecastResultTime = forecast.getForecastResults().get(seriesNumber).getTime();
+        double[] forecastInputSeries =  forecast.getForecastInputs().get(seriesNumber).getSeries();
+        LocalDate[] forecastInputTime = forecast.getForecastInputs().get(seriesNumber).getTime();
         model.addAttribute("forecastResultSeries", forecastResultSeries);
         model.addAttribute("forecastResultTime", forecastResultTime);
         model.addAttribute("forecastInputSeries", forecastInputSeries);
         model.addAttribute("forecastInputTime", forecastInputTime);
-
-        return "viewforecast";
+        return "forecastresult";
     }
-
-
 
     /**
      * Grípur fyrirspurn til að búa til spá inn í töflu

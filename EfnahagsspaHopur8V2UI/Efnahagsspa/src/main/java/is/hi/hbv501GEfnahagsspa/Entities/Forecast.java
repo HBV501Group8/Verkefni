@@ -15,10 +15,12 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +35,9 @@ public class Forecast {
     private long id;
 
     private String forecastName;
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime generatedTime;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="Forecast_ID", nullable = false)
@@ -55,6 +60,10 @@ public class Forecast {
         this.forecastName = forecastName;
     }
 
+    public LocalDateTime getGeneratedTime() { return generatedTime; }
+
+    public void setGeneratedTime(LocalDateTime generatedTime) { this.generatedTime = generatedTime; }
+
     public List<ForecastResult> getForecastResults() {
         return forecastResults;
     }
@@ -73,6 +82,9 @@ public class Forecast {
 
     public JFreeChart drawForecast(String seriesName){
 
+        // Unit data for y-axis label
+        String unit = "";
+
         // input data
         int inputLength = forecastInputs.get(0).getSeries().length;
         double[] inputSeries = new double[inputLength];
@@ -84,10 +96,12 @@ public class Forecast {
         double[] forecastUpper = new double[forecastLength];;
         double[] forecastLower = new double[forecastLength];;
         LocalDate[] forecastTime = new LocalDate[forecastLength];
+
         for(ForecastInput input:this.forecastInputs) {
             if(input.getName() == seriesName){
                 inputSeries = input.getSeries();
                 inputTime = input.getTime();
+                unit = input.getUnit();
             }
         }
 
@@ -109,7 +123,7 @@ public class Forecast {
 
         // Series for input data - simple line plot
         XYSeriesCollection datasetInput = new XYSeriesCollection();
-        XYSeries input = new XYSeries(seriesName);
+        XYSeries input = new XYSeries("Raungögn");
         for(int i = 0; i < inputSeries.length; i++){
             Date date = Date.from(inputTime[i].atStartOfDay(ZoneId.systemDefault()).toInstant());
             input.add(new Day(date).getLastMillisecond(), inputSeries[i]);
@@ -159,12 +173,11 @@ public class Forecast {
 
         // Add backgroundcolor and title to chart
         plot.setBackgroundPaint(Color.WHITE);
-        chart.setTitle(this.forecastName);
 
-        // Add label to x-axis
-        chart.getXYPlot().getRangeAxis().setLabel(seriesName);
+        // Add label to y-axis
+        chart.getXYPlot().getRangeAxis().setLabel(unit);
 
-        // Add dates to y-axis
+        // Add dates to x-axis
         plot.setDomainAxis(new DateAxis("Tími"));
 
         // Add x-axis grid
@@ -186,8 +199,6 @@ public class Forecast {
 
 
         // Add correct fonts to chart
-        chart.getTitle().setFont(new Font("Helvetica", Font.PLAIN, 30));
-
         font = new Font("Helvetica", Font.PLAIN, 15);
         chart.getXYPlot().getDomainAxis().setLabelFont(font);
         chart.getXYPlot().getDomainAxis().setTickLabelFont(font);

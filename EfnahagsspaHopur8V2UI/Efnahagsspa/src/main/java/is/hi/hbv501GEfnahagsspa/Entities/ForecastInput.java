@@ -1,4 +1,6 @@
 package is.hi.hbv501GEfnahagsspa.Entities;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -12,6 +14,7 @@ public class ForecastInput {
 
     private String name;
     private String frequency; // m monthly, q quarterly, y yearly
+    private String unit;
 
     @ElementCollection
     @OrderColumn
@@ -20,6 +23,7 @@ public class ForecastInput {
     @ElementCollection
     @OrderColumn
     @Column(name="InputTime", columnDefinition = "DATE")
+    @DateTimeFormat(pattern = "yyyy-MM")
     private LocalDate[] time;
 
 
@@ -41,6 +45,10 @@ public class ForecastInput {
     public void setFrequency(String frequency) {
         this.frequency = frequency;
     }
+
+    public String getUnit() { return unit; }
+
+    public void setUnit(String unit) { this.unit = unit; }
 
     public double[] getSeries() {
         return series;
