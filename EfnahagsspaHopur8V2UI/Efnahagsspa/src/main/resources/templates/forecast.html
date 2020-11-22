@@ -49,8 +49,8 @@
                 <thead>
                 <tbody>
                 <tr>
-                    <th>ID </th>
-                    <th>Name</th>
+                    <th>Spá </th>
+                    <th>Birta</th>
                 </tr>
 
                 <tr th:each="forecast : ${forecasts}">
@@ -58,7 +58,7 @@
 
 
                     <td th:text="${forecast.forecastName}"></td>
-                    <td><a th:href="@{/show}">Show</a></td>
+                    <td><a th:href="@{/getforecast}">Show</a></td>
 
 
                 </tr>

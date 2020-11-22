@@ -64,9 +64,10 @@ public class ForecastGeneratorService {
             while(temp_time[min].compareTo(maxMin) < 0) min++;
             while(temp_time[max].compareTo(minMax) > 0) max--;
 
-            input.setTime(Arrays.copyOfRange(temp_time, min, max));
-            input.setSeries(Arrays.copyOfRange(temp_series,min, max));
+            input.setTime(Arrays.copyOfRange(temp_time, min, max+1));
+            input.setSeries(Arrays.copyOfRange(temp_series,min, max+1));
         }
+
 
         String freq = this.forecastInputs.get(0).getFrequency();
         this.forecastResults = generateForecast(this.forecastInputs, length, freq, model,
@@ -104,51 +105,51 @@ public class ForecastGeneratorService {
     {
         inputLookup.put("Mannfjoldi_is",
                 new String[][] {{"Ibuar/mannfjoldi/1_yfirlit/arsfjordungstolur/MAN10001.px"}, {"q"},
-                        {"Sveitarfélag","-"},{"Kyn og ríkisfang", "3"}});
+                        {"Fjöldi"}, {"Sveitarfélag","-"},{"Kyn og ríkisfang", "3"}});
 
         inputLookup.put("Mannfjoldi_erl",
                 new String[][] {{"Ibuar/mannfjoldi/1_yfirlit/arsfjordungstolur/MAN10001.px"}, {"q"},
-                        {"Sveitarfélag","-"},{"Kyn og ríkisfang", "4"}});
+                        {"Fjöldi"}, {"Sveitarfélag","-"},{"Kyn og ríkisfang", "4"}});
 
         inputLookup.put("Atvinnul_rvk",
                 new String[][] {{"Samfelag/vinnumarkadur/vinnumarkadsrannsokn/2_arsfjordungstolur/VIN00920.px"}, {"q"},
-                        {"Landsvæði","1"},{"Kyn","0"}, {"Aldur","0"}, {"Eining", "0"}});
+                        {"%"},{"Landsvæði","1"},{"Kyn","0"}, {"Aldur","0"}, {"Eining", "0"}});
 
         inputLookup.put("Atvinnul_land",
                 new String[][]  {{"Samfelag/vinnumarkadur/vinnumarkadsrannsokn/2_arsfjordungstolur/VIN00920.px"}, {"q"},
-                        {"Landsvæði","2"},{"Kyn","0"}, {"Aldur","0"}, {"Eining", "0"}});
+                        {"%"},{"Landsvæði","2"},{"Kyn","0"}, {"Aldur","0"}, {"Eining", "0"}});
 
         inputLookup.put("Einkaneysla",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
-                        {"Mælikvarði","0"},{"Skipting","0"}});
+                        {"Milljónir kr."}, {"Mælikvarði","0"},{"Skipting","0"}});
 
         inputLookup.put("Samneysla",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
-                        {"Mælikvarði","0"},{"Skipting","1"}});
+                        {"Milljónir kr."},{"Mælikvarði","0"},{"Skipting","1"}});
 
         inputLookup.put("Fjarmunamyndun",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
-                        {"Mælikvarði","0"},{"Skipting","2"}});
+                        {"Milljónir kr."}, {"Mælikvarði","0"},{"Skipting","2"}});
 
         inputLookup.put("Vara_ut",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
-                        {"Mælikvarði","0"},{"Skipting","9"}});
+                        {"Milljónir kr."}, {"Mælikvarði","0"},{"Skipting","9"}});
 
         inputLookup.put("Vara_inn",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
-                        {"Mælikvarði","0"},{"Skipting","12"}});
+                        {"Milljónir kr."}, {"Mælikvarði","0"},{"Skipting","12"}});
 
         inputLookup.put("Thjonusta_ut",
-                new String[][]  {{"Efnahagur/utanrikisverslun/2_thjonusta/thjonusta/UTA04005.px"}, {"q"},
+                new String[][]  {{"Efnahagur/utanrikisverslun/2_thjonusta/thjonusta/UTA04005.px"}, {"q"}, {"Milljónir kr."},
                         {"Þjónustuviðskipti", "0"}, {"Flokkur", "0"}});
 
         inputLookup.put("Thjonusta_inn",
-                new String[][]  {{"Efnahagur/utanrikisverslun/2_thjonusta/thjonusta/UTA04005.px"}, {"q"},
+                new String[][]  {{"Efnahagur/utanrikisverslun/2_thjonusta/thjonusta/UTA04005.px"}, {"q"}, {"Milljónir kr."},
                         {"Þjónustuviðskipti", "1"}, {"Flokkur", "0"}});
 
         inputLookup.put("VLF",
                 new String[][]  {{"Efnahagur/thjodhagsreikningar/landsframl/2_landsframleidsla_arsfj/THJ01601.px"}, {"q"},
-                        {"Mælikvarði","0"},{"Skipting","14"}});
+                        {"Milljónir kr."}, {"Mælikvarði","0"},{"Skipting","14"}});
     }
 
 
@@ -196,6 +197,7 @@ public class ForecastGeneratorService {
         ForecastInput input = new ForecastInput();
         input.setName(name);
         input.setFrequency(queryParameters[1][0]);
+        input.setUnit(queryParameters[2][0]);
 
         double[] series = new double[jsonArray.length()];
         LocalDate[] time = new LocalDate[jsonArray.length()];
@@ -351,12 +353,14 @@ public class ForecastGeneratorService {
 
                 // Extract name of input in order to assign to forecastResult
                 String name = input.getName();
+                String unit = input.getUnit();
 
                 // Define ForecastResult object to store model forecast for input time series
                 ForecastResult forecastResult = new ForecastResult();
 
                 // Set forecastResult attributes already within to Java scope
                 forecastResult.setName(name);
+                forecastResult.setUnit(unit);
                 forecastResult.setForecastModel(model);
                 forecastResult.setFrequency(frequency);
                 forecastResult.setTime(time);
@@ -383,12 +387,14 @@ public class ForecastGeneratorService {
 
                 // Extract name of input in order to assign to forecastResult
                 String name = input.getName();
+                String unit = input.getUnit();
 
                 // Define ForecastResult object to store model forecast for input time series
                 ForecastResult forecastResult = new ForecastResult();
 
                 // Set forecastResult attributes already within to Java scope
                 forecastResult.setName(name);
+                forecastResult.setUnit(unit);
                 forecastResult.setForecastModel(model);
                 forecastResult.setFrequency(frequency);
                 forecastResult.setTime(time);

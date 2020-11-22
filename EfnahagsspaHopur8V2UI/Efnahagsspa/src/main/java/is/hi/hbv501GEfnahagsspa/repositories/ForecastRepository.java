@@ -10,10 +10,11 @@ public interface ForecastRepository extends JpaRepository<Forecast,Long> {
     /**
      * Vistar spá í gagnagrunn
      *
-     * @param foreCast  sem á að vista
+     * @param foreCast sem á að vista
      * @return Vistar forecast
      */
     Forecast save(Forecast forecast);
+
     /**
      * Eyðir spá úr gagnagrunn
      *
@@ -22,6 +23,7 @@ public interface ForecastRepository extends JpaRepository<Forecast,Long> {
      */
 
     void delete(Forecast forecast);
+
     /**
      * Nær í spá  spá úr gagnagrunn
      *
@@ -39,6 +41,7 @@ public interface ForecastRepository extends JpaRepository<Forecast,Long> {
      */
 
     Forecast findByForecastName(String forecastName);
+
     /**
      * Nær í allar spár úr gagnagrunn
      *
@@ -47,4 +50,8 @@ public interface ForecastRepository extends JpaRepository<Forecast,Long> {
      */
 
     List<Forecast> findAll();
+
+    List<Forecast> findAllByforecastUserID(long ID);
 }
+
+

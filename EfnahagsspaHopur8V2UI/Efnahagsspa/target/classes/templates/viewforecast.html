@@ -3,33 +3,58 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="./styles.css">
+    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.1.3/css/bootstrap.min.css} "/>
+    <link rel="stylesheet" type="text/css" href="/css/forecastgen.css" />
     <title>Spá</title>
 </head>
 <body>
     <main>
+<!--        <h5 style="text-align: center;"><b>Skráður inn sem <span th:text="${userlogged}"></span></b><a th:href="@{/logout}">&nbsp;&nbsp;&nbsp; Útskra</a> -->
+        <h6 style="margin-left: 31%;color:deepskyblue"><b>Skráður inn sem <span>Sigurjón</span></b><a th:href="@{/logout}" style="color:lightcoral" >&nbsp;&nbsp;&nbsp; Útskra</a></h6>
 
-        <a href="/forecastgeneration">Til baka</a>
-        <a href="/forecastgeneration">Uppfæra spá</a>
-        <div>
-            <img th:src="@{../images/{image}(image=${forecastName})}">
+        <!--<h5 style="margin-left: 35%";><a href="/forecast">Skoða aðrar spár</a><a href="/updateforecast">Uppfæra spá</a><a href="/forecastgeneration">Ný spá</a></h5> -->
+
+        <h5 th:text="${forecastName}" style="margin-left: 35%;">Nafn á spá</h5>
+        <h6 th:text="@{'Spá var gerð ' + ${#temporals.format(forecastTime, 'dd-MM-yyyy HH:mm')}}" style="margin-left: 31%;">Tími þegar spá var gerð</h6>
+        <h5 style="margin-left: 28%";><a href="/forecastredirect">Skoða aðrar spár &nbsp;&nbsp;&nbsp;</a><a href="/forecastgeneration">Uppfæra spá &nbsp;&nbsp;&nbsp;</a><a href="/forecastgeneration">Ný spá</a></h5>
+        <div class="container" >
+
+                    <ul class="nav nav-tabs mt-5" id="myTabs">
+                        <li class="nav-item" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}">
+                            <a class="nav-link" th:classappend="${index == 0} ? 'active'" th:href="@{'#tab' + ${index+1}}" th:data-url="'/forecastresult/' + ${index}" data-toggle="tab" th:text="${seriesNames[index]}"></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content pt-3">
+                        <div class="tab-pane" th:classappend="${index == 0} ? 'active'" th:id="@{'tab' + ${index+1}}" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}"></div>
+                    </div>t
         </div>
-        <a href="/projects">Næsta breyta</a>
-        <a href="/projects">Fyrri breyta</a>
-        <h2>Spá</h2>
-        <table>
-            <tr th:each="index : ${#numbers.sequence( 0, forecastResultSeries.length - 1)}">
-                <td th:text="${forecastResultTime[index]}"></td>
-                <td th:text="${forecastResultSeries[index]}"></td>
-            </tr>
-        </table>
-        <h2>Tímaröð</h2>
-        <table>
-            <tr th:each="index : ${#numbers.sequence( 0, forecastInputSeries.length - 1)}">
-                <td th:text="${forecastInputTime[index]}"></td>
-                <td th:text="${forecastInputSeries[index]}"></td>
-            </tr>
-        </table>
+
     </main>
+
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+    <script>
+        $('#myTabs a').click(function (e) {
+            e.preventDefault();
+
+            var url = $(this).attr("data-url");
+            var href = this.hash;
+            var pane = $(this);
+
+            // ajax load from data-url
+            $(href).load(url, function (result) {
+                pane.tab('show');
+            });
+        });
+
+        // load first tab content
+
+        $('#tab1').load($('.nav-link.active').attr("data-url"), function (result) {
+        });
+
+    </script>
 </body>
 </html>

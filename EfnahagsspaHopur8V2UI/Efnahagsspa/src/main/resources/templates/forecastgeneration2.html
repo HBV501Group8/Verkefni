@@ -1,0 +1,144 @@
+<html xmlns:th="https://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/css/forecastgen.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <form id="contact"  autocomplete="off" method="post" action="forecastgeneration" >
+        <h3>Spásmiður</h3>
+        <fieldset>
+            <label>Nafn á spá:</label>
+            <input type="text" name="forecastname" id="forecastname" maxlength="255" value="Sigurjon"/>
+        </fieldset>
+
+        <fieldset>
+            <label>Lengd:</label>
+            <input type="number" name="length" id="length" min="1" max="12" step="1" maxlength="2" oninput="maxLengthCheck(this)"value="6" />
+        </fieldset>
+        <fieldset>
+            <input type="radio" name="forecastmodel" value="var" checked="checked"/>
+            <label>VAR</label>
+            <input type="radio" name="forecastmodel" value="arima" />
+            <label>ARIMA</label>
+        </fieldset>
+        <fieldset>
+            <input type="checkbox" name="seriesNames" value="Mannfjoldi_is" />
+            <label>Fjöldi íslenskra ríkisborgara</label><br>
+            <input type="checkbox" name="seriesNames" value="Mannfjoldi_erl" checked />
+            <label>Fjöld erlendra ríkisborgara</label><br>
+            <input type="checkbox" name="seriesNames" value="Atvinnul_rvk" checked/>
+            <label>Atvinnuleysi</label><br>
+            <input type="checkbox" name="seriesNames" value="Atvinnul_land" checked/>
+            <label>Atvinnleysi í Reykavík</label>
+            <input type="checkbox" name="seriesNames" value="Einkaneysla" />
+            <label>Einkaneysla</label><br>
+            <input type="checkbox" name="seriesNames" value="Samneysla" />
+            <label>Samneysla</label><br>
+            <input type="checkbox" name="seriesNames" value="Fjarmunamyndun" />
+            <label>Fjármunamyndun</label><br>
+            <input type="checkbox" name="seriesNames" value="Vara_ut" />
+            <label>Útfluttningur vara</label><br>
+            <input type="checkbox" name="seriesNames" value="Vara_inn" />
+            <label>Innflutningur vara</label><br>
+            <input type="checkbox" name="seriesNames" value="Thjonusta_ut" />
+            <label>Útflutningur þjónustu</label><br>
+            <input type="checkbox" name="seriesNames" value="Thjonusta_inn" />
+            <label>Innflutningur þjónustu</label><br>
+            <input type="checkbox" name="seriesNames" value="VLF" />
+            <label>Verg landsframleiðsla</label>
+        </fieldset>
+        <fieldset>
+
+            <input	 type="submit" onclick="return myFunction()"/>
+        </fieldset>
+        <div class="alert" id="alert" style="visibility:hidden">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+
+        </div>
+
+    </form>
+
+    <script>
+        function myFunction() {
+
+
+            // Ef nafn á spá er ekki skráð
+
+            var strEmpty = document.getElementById("forecastname");
+            if(strEmpty.value=="") {
+                var error = document.getElementById("alert");
+                // Changing content and color of content
+                error.innerHTML = "Það þarf að gefa spá nafn";
+                error.style.visibility = "visible";
+                return false;
+            }
+
+            // Ef lengd á spá er ekki skráð
+            strEmpty = document.getElementById("length");
+            if(strEmpty.value=="") {
+                var error = document.getElementById("alert");
+                // Changing content and color of content
+                error.innerHTML = "Það þarf að velja lengd spáar frá 1 - 12";
+                error.style.visibility = "visible";
+                return false;
+            }
+
+            var strArima = findSelection("forecastmodel");
+
+            if(strArima ==="arima")
+                return true;
+
+
+
+            // Ef færri en tevær breytur eru valdar
+
+            var checkArray = new Array();
+            $('input[type=checkbox]').each(function () {
+                this.checked ? checkArray.push("1") : checkArray.push("0");
+            });
+            var count = 0;
+            for(var i = 0; i < checkArray.length; ++i){
+                if(checkArray[i] == 1)
+                    count++;
+            }
+            if(count<2) {
+
+                var error = document.getElementById("alert");
+                // Changing content and color of content
+                error.innerHTML = "Það þarf að velja minsta kosti 2 breytur";
+                error.style.visibility = "visible";
+
+                return false;
+            }
+            return true;
+        }
+
+        // This is an old version, for a more recent version look at
+        // https://jsfiddle.net/DRSDavidSoft/zb4ft1qq/2/
+        function maxLengthCheck(object)
+        {
+            if (object.value.length > object.maxLength)
+                object.value = object.value.slice(0, object.maxLength)
+        }
+
+        // Finna hvaða spámodel er valið
+
+        function findSelection(field) {
+            var test = document.getElementsByName(field);
+            var sizes = test.length;
+
+            for (i=0; i < sizes; i++) {
+                if (test[i].checked==true) {
+                     return test[i].value;
+                }
+            }
+        }
+
+    </script>
+</div>
+</body>
+</html>
