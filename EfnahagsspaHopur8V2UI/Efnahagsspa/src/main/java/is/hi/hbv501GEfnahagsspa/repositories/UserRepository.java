@@ -65,6 +65,4 @@ public interface UserRepository extends JpaRepository<User,Long> {
      * @return Skilar notanda
      */
    List<User> findUsersByUserNameContaining(String userName);
-
-
 }

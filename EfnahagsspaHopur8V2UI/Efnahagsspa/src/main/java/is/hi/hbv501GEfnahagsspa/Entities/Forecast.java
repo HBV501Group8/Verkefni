@@ -1,5 +1,7 @@
 package is.hi.hbv501GEfnahagsspa.Entities;
 
+import org.apache.catalina.session.StandardSession;
+import org.hibernate.Session;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -15,9 +17,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +37,11 @@ public class Forecast {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
     private long id;
+     public static long  userIDStatic;
+     public static String  userStringStatic;
+    private long forecastUserID = userIDStatic;
+    private String forecastUserName = userStringStatic;
+
 
     private String forecastName;
 
@@ -49,6 +58,8 @@ public class Forecast {
 
 
     public Forecast() {
+
+
     }
 
 

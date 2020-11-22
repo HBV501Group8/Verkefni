@@ -1,5 +1,6 @@
 package is.hi.hbv501GEfnahagsspa.Controllers;
 
+import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
 import is.hi.hbv501GEfnahagsspa.Entities.User;
 import is.hi.hbv501GEfnahagsspa.Services.ForecastService;
 import is.hi.hbv501GEfnahagsspa.Services.UserService;
@@ -91,6 +92,11 @@ public class UserController {
         User userexists =  userService.findByuserName(userName);
         User passwordexists =  userService.findByuserPassword(password);
         // Ef notandi er þegar til er ekkert gert
+        if(passwordexists!=null) {
+            model.addAttribute("errormsg", "Villa Þetta lykilorð er þegar til");
+            return "Register";
+
+        }
         if(userexists==null) {
             user.setName(Name);
             user.setUserName(userName);
@@ -99,9 +105,12 @@ public class UserController {
             user.setEnabled(true);
             user.setAdmin(false);
             userService.save(user);
+            model.addAttribute("errormsg", "Notandi hefur verið nýskráður");
+            return "testLogin";
+        } else {
+            model.addAttribute("errormsg", "Villa Notandi er þegar til");
+            return "Register";
         }
-
-        return "testLogin";
     }
 
 
@@ -132,6 +141,7 @@ public class UserController {
         // Ef username er ekki til staðar þá er ekert gert
 
         if(userexists==null)  {
+            model.addAttribute("errormsg","Villa Notandi er ekki til");
             return "testLogin";
         }
         // Athuga hvort user sé Admin
@@ -142,9 +152,13 @@ public class UserController {
         if(userexists!=null && passswexists!=null)  {
             // Ef notandi er Admin
             if(!blnadmin) {
+                Forecast.userIDStatic = userexists.id;
+                Forecast.userStringStatic = userexists.userName;
+                session.setAttribute("loggedInUserID", userexists.id);
                 session.setAttribute("loggedInUser", userexists.userName);
                 session.setAttribute("userType", "user");
                 String userlogged = (String) session.getAttribute("loggedInUser");
+                //model.addAttribute("forecasts", forecastService.findAllByforecastUserID(1));
                 model.addAttribute("forecasts", forecastService.findAll());
                 model.addAttribute("userlogged", userlogged);
 
@@ -160,6 +174,7 @@ public class UserController {
                 return "users";
                 }
             }
+        model.addAttribute("errormsg","Villa");
         return "testLogin";
     }
 
@@ -273,7 +288,14 @@ public class UserController {
         return "users";
     }
 
+    @RequestMapping(value = "/forecastredirect", method = RequestMethod.GET)
+    public String userforecast(Model model){
+        model.addAttribute("forecasts", forecastService.findAll());
+//        model.addAttribute("userlogged", userlogged);
 
+        return "forecast";
+
+    }
 }
 
 

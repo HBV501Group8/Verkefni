@@ -43,4 +43,10 @@ public interface ForecastService {
      * @return Skilar lista af spám
      */
     List<Forecast> findAll();
+
+
+     List<Forecast> findAllByforecastUserID(long ID);
+
+
+
 }

@@ -64,4 +64,11 @@ public class ForecastServiceImplementation implements ForecastService {
     public List<Forecast> findAll() {
         return repository.findAll();
     }
+
+    @Override
+    public List<Forecast> findAllByforecastUserID(long ID) {
+        return repository.findAllByforecastUserID(ID);
+    }
+
+
 }

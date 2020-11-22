@@ -115,7 +115,9 @@ public class ForecastController {
             seriesNames[i] = seriesNameLookup.get(newForecast.getForecastResults().get(i).getName());
         }
         model.addAttribute("seriesNames", seriesNames);
-
+        String userlogged = (String) session.getAttribute("loggedInUser");
+        System.out.println("user " + userlogged);
+        model.addAttribute("userlogged", userlogged);
         return "viewforecast";
 
     }
@@ -163,6 +165,9 @@ public class ForecastController {
             names[i] = seriesNameLookup.get(forecast.getForecastResults().get(i).getName());
         }
         model.addAttribute("seriesNames", names);
+        String userlogged = (String) session.getAttribute("loggedInUser");
+        System.out.println("user " + userlogged);
+        model.addAttribute("userlogged", userlogged);
 
         return "viewforecast";
     }
@@ -182,7 +187,7 @@ public class ForecastController {
         //TODO breyta þessu þannig að geymist sem user name ekki name á series
 
         // Save chart for display on next view
-        File file = new File("EfnahagsspaHopur8V2UI/Efnahagsspa/target/classes/static/images/"
+        File file = new File("Efnahagsspa/target/classes/static/images/"
                 + forecast.getForecastResults().get(seriesNumber).getName() + ".jpeg");
         try {
             ChartUtilities.saveChartAsJPEG(file, chart,700, 400);
@@ -268,8 +273,8 @@ public class ForecastController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String makeData(User user, Model model) throws IOException, ScriptException {
         
-        List<Forecast> list = new ArrayList<>();
-        list = forecastService.findAll();
+        List<User> list = new ArrayList<>();
+        list = userService.findAll();
         if (list.isEmpty()) {
             user.setName("Sigurjón Ólafsson");
             user.setUserName("Sigurjon");
@@ -286,14 +291,23 @@ public class ForecastController {
             user2.setEnabled(true);
             user2.setAdmin(true);
             userService.save(user2);
-            generateDummy(model);
-            generateDummy(model);
+          //  generateDummy(model);
+          //  generateDummy(model);
             return "testLogin";
 
         }
 
 
         return "testLogin";
+    }
+    /**
+     * Grípur fyrirspurnir um spásmið view.
+     * @return Skilar forecastgeneration view
+     */
+    @RequestMapping(value = "/getforecast", method = RequestMethod.GET)
+    public String getforecast(Model model){
+
+        return "viewforecast";
     }
 
 }
