@@ -70,7 +70,7 @@ public class ForecastController {
     @RequestMapping(value = "forecastgeneration", method = RequestMethod.GET)
     public String forecastForm(Model model){
 
-        return "forecastgeneration2";
+        return "forecastgeneration";
     }
 
     @RequestMapping(value = "updateforecast", method = RequestMethod.GET)
@@ -115,7 +115,9 @@ public class ForecastController {
             seriesNames[i] = seriesNameLookup.get(newForecast.getForecastResults().get(i).getName());
         }
         model.addAttribute("seriesNames", seriesNames);
-
+        String userlogged = (String) session.getAttribute("loggedInUser");
+        System.out.println("user " + userlogged);
+        model.addAttribute("userlogged", userlogged);
         return "viewforecast";
 
     }
@@ -163,6 +165,9 @@ public class ForecastController {
             names[i] = seriesNameLookup.get(forecast.getForecastResults().get(i).getName());
         }
         model.addAttribute("seriesNames", names);
+        String userlogged = (String) session.getAttribute("loggedInUser");
+        System.out.println("user " + userlogged);
+        model.addAttribute("userlogged", userlogged);
 
         return "viewforecast";
     }
@@ -302,7 +307,7 @@ public class ForecastController {
     @RequestMapping(value = "/getforecast", method = RequestMethod.GET)
     public String getforecast(Model model){
 
-        return "forecastgeneration";
+        return "viewforecast";
     }
 
 }

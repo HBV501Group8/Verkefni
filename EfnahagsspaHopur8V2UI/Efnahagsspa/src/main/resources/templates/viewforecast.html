@@ -10,7 +10,7 @@
 <body>
     <main>
 <!--        <h5 style="text-align: center;"><b>Skráður inn sem <span th:text="${userlogged}"></span></b><a th:href="@{/logout}">&nbsp;&nbsp;&nbsp; Útskra</a> -->
-        <h6 style="margin-left: 31%;color:deepskyblue"><b>Skráður inn sem <span>Sigurjón</span></b><a th:href="@{/logout}" style="color:lightcoral" >&nbsp;&nbsp;&nbsp; Útskra</a></h6>
+        <h6 style="margin-left: 31%;color:deepskyblue"><b>Skráður inn sem <span th:text="${userlogged}"></span></b><a th:href="@{/logout}" style="color:lightcoral" >&nbsp;&nbsp;&nbsp; Útskra</a></h6>
 
         <!--<h5 style="margin-left: 35%";><a href="/forecast">Skoða aðrar spár</a><a href="/updateforecast">Uppfæra spá</a><a href="/forecastgeneration">Ný spá</a></h5> -->
 
@@ -19,15 +19,15 @@
         <h5 style="margin-left: 28%";><a href="/forecastredirect">Skoða aðrar spár &nbsp;&nbsp;&nbsp;</a><a href="/forecastgeneration">Uppfæra spá &nbsp;&nbsp;&nbsp;</a><a href="/forecastgeneration">Ný spá</a></h5>
         <div class="container" >
 
-                    <ul class="nav nav-tabs mt-5" id="myTabs">
-                        <li class="nav-item" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}">
-                            <a class="nav-link" th:classappend="${index == 0} ? 'active'" th:href="@{'#tab' + ${index+1}}" th:data-url="'/forecastresult/' + ${index}" data-toggle="tab" th:text="${seriesNames[index]}"></a>
-                        </li>
-                    </ul>
+            <ul class="nav nav-tabs mt-5" id="myTabs">
+                <li class="nav-item" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}">
+                    <a class="nav-link" th:classappend="${index == 0} ? 'active'" th:href="@{'#tab' + ${index+1}}" th:data-url="'/forecastresult/' + ${index}" data-toggle="tab" th:text="${seriesNames[index]}"></a>
+                </li>
+            </ul>
 
-                    <div class="tab-content pt-3">
-                        <div class="tab-pane" th:classappend="${index == 0} ? 'active'" th:id="@{'tab' + ${index+1}}" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}"></div>
-                    </div>t
+            <div class="tab-content pt-3">
+                <div class="tab-pane" th:classappend="${index == 0} ? 'active'" th:id="@{'tab' + ${index+1}}" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}"></div>
+            </div>t
         </div>
 
     </main>
