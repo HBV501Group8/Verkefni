@@ -27,7 +27,7 @@
 
             <div class="tab-content pt-3">
                 <div class="tab-pane" th:classappend="${index == 0} ? 'active'" th:id="@{'tab' + ${index+1}}" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}"></div>
-            </div>t
+            </div>
         </div>
 
     </main>

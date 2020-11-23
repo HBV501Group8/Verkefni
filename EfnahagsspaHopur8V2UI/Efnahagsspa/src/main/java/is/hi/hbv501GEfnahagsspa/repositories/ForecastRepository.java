@@ -52,6 +52,8 @@ public interface ForecastRepository extends JpaRepository<Forecast,Long> {
     List<Forecast> findAll();
 
     List<Forecast> findAllByforecastUserID(long ID);
+
+    List<Forecast> findByforecastUserName(String forecastUserName);
 }
 
 

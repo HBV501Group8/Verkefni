@@ -159,7 +159,7 @@ public class UserController {
                 session.setAttribute("userType", "user");
                 String userlogged = (String) session.getAttribute("loggedInUser");
                 //model.addAttribute("forecasts", forecastService.findAllByforecastUserID(1));
-                model.addAttribute("forecasts", forecastService.findAll());
+                model.addAttribute("forecasts", forecastService.findByforecastUserName(userlogged));
                 model.addAttribute("userlogged", userlogged);
 
                 return "forecast";
@@ -289,8 +289,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/forecastredirect", method = RequestMethod.GET)
-    public String userforecast(Model model){
-        model.addAttribute("forecasts", forecastService.findAll());
+    public String userforecast(Model model, HttpSession session){
+        String forecastuser = (String) session.getAttribute("loggedInUser");
+        model.addAttribute("forecasts", forecastService.findByforecastUserName(forecastuser));
 //        model.addAttribute("userlogged", userlogged);
 
         return "forecast";

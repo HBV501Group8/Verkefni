@@ -47,6 +47,6 @@ public interface ForecastService {
 
      List<Forecast> findAllByforecastUserID(long ID);
 
-
+    List<Forecast> findByforecastUserName(String forecastUserName);
 
 }

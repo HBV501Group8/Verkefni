@@ -70,5 +70,10 @@ public class ForecastServiceImplementation implements ForecastService {
         return repository.findAllByforecastUserID(ID);
     }
 
+    @Override
+    public List<Forecast> findByforecastUserName(String forecastUserName) {
+        return repository.findByforecastUserName(forecastUserName);
+    }
+
 
 }
