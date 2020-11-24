@@ -53,7 +53,7 @@
         </fieldset>
         <fieldset>
 
-            <input	 type="submit" onclick="return myFunction()"/>
+            <input	 type="submit" onclick="return validateSelection()"/>
         </fieldset>
         <div class="alert" id="alert" style="visibility:hidden">
             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -63,8 +63,10 @@
     </form>
 
     <script>
-        function myFunction() {
-
+        // Athugar hvort val notanda í formi er löglegt eða ekki
+        // Ef það er ekki löglegt skilar síðan villu og lætur notanda vita hvað vantar
+        // Annars sendir síðan post request með vali notandans
+        function validateSelection() {
 
             // Ef nafn á spá er ekki skráð
 
@@ -94,7 +96,7 @@
 
 
 
-            // Ef færri en tevær breytur eru valdar
+            // Ef færri en tvær breytur eru valdar
 
             var checkArray = new Array();
             $('input[type=checkbox]').each(function () {

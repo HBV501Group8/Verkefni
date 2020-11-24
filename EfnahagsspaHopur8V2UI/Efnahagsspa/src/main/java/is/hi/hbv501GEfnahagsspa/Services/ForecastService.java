@@ -1,6 +1,7 @@
 package is.hi.hbv501GEfnahagsspa.Services;
 
 import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
+import is.hi.hbv501GEfnahagsspa.Entities.User;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ public interface ForecastService {
     /**
      * Vistar spá í gagnagrunn
      *
-     * @param foreCast  sem á að vista
+     * @param forecast  sem á að vista
      * @return Vistar forecast
      */
     Forecast save(Forecast forecast);
@@ -16,7 +17,7 @@ public interface ForecastService {
     /**
      * Eyðir spá úr gagnagrunn
      *
-     * @param id lykill spá sem á að eyða
+     * @param ID lykill spá sem á að eyða
      * @return spá hefur verið eydd
      */
     void delete(Forecast forecast);
@@ -34,8 +35,6 @@ public interface ForecastService {
      * @param forecastName er nafn sem á að leita eftir
      * @return Skilar spá
      */
-    Forecast findByForecastName(String forecastName);
-
     /**
      * Nær í allar spár úr gagnagrunn
      *
@@ -44,9 +43,5 @@ public interface ForecastService {
      */
     List<Forecast> findAll();
 
-
-     List<Forecast> findAllByforecastUserID(long ID);
-
-
-
+    List<Forecast> findAllByUser(User user);
 }

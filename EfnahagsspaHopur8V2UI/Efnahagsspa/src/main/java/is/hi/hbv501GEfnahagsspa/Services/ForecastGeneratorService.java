@@ -1,4 +1,4 @@
-package is.hi.hbv501GEfnahagsspa.Services.Implementation;
+package is.hi.hbv501GEfnahagsspa.Services;
 import is.hi.hbv501GEfnahagsspa.Entities.ForecastInput;
 import is.hi.hbv501GEfnahagsspa.Entities.ForecastResult;
 import okhttp3.*;

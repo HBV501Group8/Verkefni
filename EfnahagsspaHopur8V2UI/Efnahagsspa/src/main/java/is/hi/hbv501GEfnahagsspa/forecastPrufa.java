@@ -1,7 +1,7 @@
 package is.hi.hbv501GEfnahagsspa;
 
 import is.hi.hbv501GEfnahagsspa.Entities.Forecast;
-import is.hi.hbv501GEfnahagsspa.Services.Implementation.ForecastGeneratorService;
+import is.hi.hbv501GEfnahagsspa.Services.ForecastGeneratorService;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 

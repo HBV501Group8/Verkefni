@@ -2,6 +2,8 @@ package is.hi.hbv501GEfnahagsspa.Entities;
 
 import org.apache.catalina.session.StandardSession;
 import org.hibernate.Session;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -36,12 +38,11 @@ public class Forecast {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ID")
-    private long id;
-     public static long  userIDStatic;
-     public static String  userStringStatic;
-    private long forecastUserID = userIDStatic;
-    private String forecastUserName = userStringStatic;
+    public long id;
 
+    @ManyToOne
+    @JoinColumn(name="User_id")
+    private User user;
 
     private String forecastName;
 
@@ -49,10 +50,12 @@ public class Forecast {
     private LocalDateTime generatedTime;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="Forecast_ID", nullable = false)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name="Forecast_ID")
     private List<ForecastResult> forecastResults = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name="Forecast_ID")
     private List<ForecastInput> forecastInputs = new ArrayList<>();
 
@@ -62,6 +65,9 @@ public class Forecast {
 
     }
 
+    public User getUser() { return user; }
+
+    public void setUser(User user) { this.user = user; }
 
     public String getForecastName() {
         return forecastName;

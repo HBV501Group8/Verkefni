@@ -42,7 +42,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     User findByuserName(String userName);
 
     /**
-     * Nær í allar spár úr gagnagrunn
+     * Nær í alla notendur úr gagnagrunn
      *
      * @param
      * @return Skilar lista af spám
@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAll();
 
     /**
-     * Nær í spár eftir lykilorði
+     * Nær í notanda eftir lykilorði
      *
      * @param
      * @return Skilar notanda

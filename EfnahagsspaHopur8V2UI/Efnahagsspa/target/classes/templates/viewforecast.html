@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link th:rel="stylesheet" th:href="@{webjars/bootstrap/4.1.3/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" href="/css/forecastgen.css" />
     <title>Spá</title>
 </head>
@@ -16,7 +16,9 @@
 
         <h5 th:text="${forecastName}" style="margin-left: 35%;">Nafn á spá</h5>
         <h6 th:text="@{'Spá var gerð ' + ${#temporals.format(forecastTime, 'dd-MM-yyyy HH:mm')}}" style="margin-left: 31%;">Tími þegar spá var gerð</h6>
-        <h5 style="margin-left: 28%";><a href="/forecastredirect">Skoða aðrar spár &nbsp;&nbsp;&nbsp;</a><a href="/forecastgeneration">Uppfæra spá &nbsp;&nbsp;&nbsp;</a><a href="/forecastgeneration">Ný spá</a></h5>
+        <h5 style="margin-left: 28%";><a href="/listforecasts">Skoða aðrar spár &nbsp;&nbsp;&nbsp;
+        </a><a href="/updateforecast">Uppfæra spá</a>
+            <a href="/forecastgeneration">Ný spá</a></h5>
         <div class="container" >
 
             <ul class="nav nav-tabs mt-5" id="myTabs">
@@ -27,7 +29,7 @@
 
             <div class="tab-content pt-3">
                 <div class="tab-pane" th:classappend="${index == 0} ? 'active'" th:id="@{'tab' + ${index+1}}" th:each="index : ${#numbers.sequence( 0, seriesNames.length - 1)}"></div>
-            </div>t
+            </div>
         </div>
 
     </main>

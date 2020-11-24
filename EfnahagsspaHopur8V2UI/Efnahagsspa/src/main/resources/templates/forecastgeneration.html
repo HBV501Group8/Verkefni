@@ -12,28 +12,28 @@
         <h3>Spásmiður</h3>
         <fieldset>
             <label>Nafn á spá:</label>
-            <input type="text" name="forecastname" id="forecastname" maxlength="255" value="Sigurjon"/>
+            <input type="text" name="forecastname" id="forecastname" maxlength="255"/>
         </fieldset>
 
         <fieldset>
             <label>Lengd:</label>
-            <input type="number" name="length" id="length" min="1" max="12" step="1" maxlength="2" oninput="maxLengthCheck(this)"value="6" />
+            <input type="number" name="length" id="length" min="1" max="12" step="1" maxlength="2" oninput="maxLengthCheck(this)" />
         </fieldset>
         <fieldset>
-            <input type="radio" name="forecastmodel" value="var" checked="checked"/>
+            <input type="radio" name="forecastmodel" value="var"/>
             <label>VAR</label>
-            <input type="radio" name="forecastmodel" value="arima" />
+            <input type="radio" name="forecastmodel" value="arima"/>
             <label>ARIMA</label>
         </fieldset>
         <fieldset>
             <input type="checkbox" name="seriesNames" value="Mannfjoldi_is" />
             <label>Fjöldi íslenskra ríkisborgara</label><br>
-            <input type="checkbox" name="seriesNames" value="Mannfjoldi_erl" checked />
+            <input type="checkbox" name="seriesNames" value="Mannfjoldi_erl"/>
             <label>Fjöld erlendra ríkisborgara</label><br>
-            <input type="checkbox" name="seriesNames" value="Atvinnul_rvk" checked/>
+            <input type="checkbox" name="seriesNames" value="Atvinnul_rvk"/>
             <label>Atvinnuleysi</label><br>
-            <input type="checkbox" name="seriesNames" value="Atvinnul_land" checked/>
-            <label>Atvinnleysi í Reykavík</label>
+            <input type="checkbox" name="seriesNames" value="Atvinnul_land"/>
+            <label>Atvinnleysi í Reykavík</label><br>
             <input type="checkbox" name="seriesNames" value="Einkaneysla" />
             <label>Einkaneysla</label><br>
             <input type="checkbox" name="seriesNames" value="Samneysla" />
@@ -53,7 +53,7 @@
         </fieldset>
         <fieldset>
 
-            <input	 type="submit" onclick="return myFunction()"/>
+            <input	 type="submit" onclick="return validateInput()"/>
         </fieldset>
         <div class="alert" id="alert" style="visibility:hidden">
             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -63,7 +63,7 @@
     </form>
 
     <script>
-        function myFunction() {
+        function validateInput() {
 
 
             // Ef nafn á spá er ekki skráð

@@ -5,6 +5,8 @@
 
 import javax.persistence.*;
 import javax.xml.soap.Name;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "User")
 @Entity
@@ -23,8 +25,14 @@ public class  User {
     public Boolean isEnabled;
     public Boolean isAdmin;
 
+    // Listi með spám sem notandi hefur gert
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Forecast> forecasts = new ArrayList<Forecast>();
 
-    // Setters og geters
+    // Constructor
+    public User() { }
+
+    // Setters og getters
 
     public String getUserName() {
         return userName;
@@ -58,11 +66,6 @@ public class  User {
         Email = email;
     }
 
-
-    public User() {
-
-    }
-
     public Boolean getEnabled() {
         return isEnabled;
     }
@@ -79,4 +82,7 @@ public class  User {
         isAdmin = admin;
     }
 
+    public List<Forecast> getForecasts() { return forecasts; }
+
+    public void setForecasts(List<Forecast> forecasts) { this.forecasts = forecasts; }
 }

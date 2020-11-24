@@ -49,7 +49,7 @@ public class UserController {
         session.setAttribute("loggedInUser","");
         session.setAttribute("userType", "");
 
-        return "testLogin";
+        return "login";
     }
 
     /**
@@ -61,7 +61,7 @@ public class UserController {
 
     @RequestMapping("/register")
     public String register(Model model) {
-        return "Register";
+        return "register";
     }
 
 
@@ -94,7 +94,7 @@ public class UserController {
         // Ef notandi er þegar til er ekkert gert
         if(passwordexists!=null) {
             model.addAttribute("errormsg", "Villa Þetta lykilorð er þegar til");
-            return "Register";
+            return "register";
 
         }
         if(userexists==null) {
@@ -104,12 +104,13 @@ public class UserController {
             user.setEmail(Email);
             user.setEnabled(true);
             user.setAdmin(false);
+
             userService.save(user);
             model.addAttribute("errormsg", "Notandi hefur verið nýskráður");
-            return "testLogin";
+            return "login";
         } else {
             model.addAttribute("errormsg", "Villa Notandi er þegar til");
-            return "Register";
+            return "register";
         }
     }
 
@@ -125,7 +126,7 @@ public class UserController {
      * annars er farið í notandastýringu
      */
 
-    @RequestMapping(value = "/logintest", method = RequestMethod.POST)
+    @RequestMapping(value = "/loginsubmit", method = RequestMethod.POST)
     public String userlogin(User user,HttpServletRequest request, Model model, HttpSession session) {
 
         // Ná í breytur
@@ -142,7 +143,7 @@ public class UserController {
 
         if(userexists==null)  {
             model.addAttribute("errormsg","Villa Notandi er ekki til");
-            return "testLogin";
+            return "login";
         }
         // Athuga hvort user sé Admin
         Boolean blnadmin = userexists.getAdmin();
@@ -152,17 +153,22 @@ public class UserController {
         if(userexists!=null && passswexists!=null)  {
             // Ef notandi er Admin
             if(!blnadmin) {
-                Forecast.userIDStatic = userexists.id;
-                Forecast.userStringStatic = userexists.userName;
+                //TODO þetta má bæta, mætti bara setja user sem attribute í session
+                //og svo nota getters til að sækja attributes. Ef þessu er breytt
+                //hér þarf að fara í gegnum öll template + þennan controller og laga
+                //forecastController gerir alltaf ráð fyrir að sækja megi user entity
+                //í session undir lyklinum activeUser
                 session.setAttribute("loggedInUserID", userexists.id);
                 session.setAttribute("loggedInUser", userexists.userName);
                 session.setAttribute("userType", "user");
                 String userlogged = (String) session.getAttribute("loggedInUser");
                 //model.addAttribute("forecasts", forecastService.findAllByforecastUserID(1));
-                model.addAttribute("forecasts", forecastService.findAll());
+                model.addAttribute("forecasts", forecastService.findAllByUser(userexists));
                 model.addAttribute("userlogged", userlogged);
 
-                return "forecast";
+                //TODO skítamix þangað til búið er að laga það sem er hér í todo að ofan
+                session.setAttribute("activeUser", userexists);
+                return "listforecasts";
             }
             else {
                 // Fara yfir á admin
@@ -175,7 +181,7 @@ public class UserController {
                 }
             }
         model.addAttribute("errormsg","Villa");
-        return "testLogin";
+        return "login";
     }
 
     /**
@@ -286,15 +292,6 @@ public class UserController {
 
         model.addAttribute("users", userService.findAll());
         return "users";
-    }
-
-    @RequestMapping(value = "/forecastredirect", method = RequestMethod.GET)
-    public String userforecast(Model model){
-        model.addAttribute("forecasts", forecastService.findAll());
-//        model.addAttribute("userlogged", userlogged);
-
-        return "forecast";
-
     }
 }
 
