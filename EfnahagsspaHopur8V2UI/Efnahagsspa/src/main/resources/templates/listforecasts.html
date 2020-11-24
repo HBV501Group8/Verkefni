@@ -12,8 +12,10 @@
     <link rel="stylesheet" type="text/css" href="/css/forecast.css" />
 </head>
   <body>
-     <h5 style="text-align: center;"><b>Skráður inn sem <span th:text="${userlogged}"></span></b><a th:href="@{/logout}">&nbsp;&nbsp;&nbsp; Útskra</a>
-        <span style="color:red;margin-left: 10px;"><a th:href="@{/forecastgeneration}">Búa til nýja spá</a></span></h5>
+     <h5 style="margin-left: 33%;color:deepskyblue"><b>Skráður inn sem <span th:text="${userlogged}"></span></b><a th:href="@{/logout}">
+         <span style="color:red">&nbsp;&nbsp;&nbsp; Útskra </span></a>
+
+         <span style="color: blue;margin-left: 20px;"><a th:href="@{/forecastgeneration}"><b>Búa til nýja spá</b></a></span></h5>
         <div id="searchResults">
            <div  th:if="!${#lists.isEmpty(forecasts)}">
              <table>

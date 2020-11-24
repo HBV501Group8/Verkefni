@@ -55,7 +55,8 @@ public class ForecastController {
     public String forecastsList(Model model, HttpSession session){
         User user = (User) session.getAttribute("activeUser");
         model.addAttribute("forecasts", forecastService.findAllByUser(user));;
-
+        String userlogged = (String) session.getAttribute("loggedInUser");
+        model.addAttribute("userlogged", userlogged);
         return "listforecasts";
 
     }
