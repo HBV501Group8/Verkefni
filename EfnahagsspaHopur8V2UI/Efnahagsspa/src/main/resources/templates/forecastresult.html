@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.1.3/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{css/forecastresult.css}">
     <title>ForecastResult</title>
 </head>
 <body>
@@ -12,18 +13,34 @@
             <img th:src="@{'data:image/png;base64,'+${chartImage}}">
         </div>
         <h2>Spá</h2>
-        <table>
-            <tr th:each="index : ${#numbers.sequence( 0, forecastResultSeries.length - 1)}">
-                <td th:text="${#temporals.format(forecastResultTime[index], 'MM-yyyy')}"></td>
-                <td th:text="${forecastResultSeries[index]}"></td>
-            </tr>
+        <table class="tafla">
+            <thead>
+                <tr>
+                    <th>Tími</th>
+                    <th>Gildi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="index : ${#numbers.sequence( 0, forecastResultSeries.length - 1)}">
+                    <td th:text="${#temporals.format(forecastResultTime[index], 'MM-yyyy')}"></td>
+                    <td th:text="${#numbers.formatDecimal(forecastResultSeries[index], 1, 2, 'COMMA')}"></td>
+                </tr>
+            </tbody>
         </table>
         <h2>Tímaröð</h2>
-        <table>
-            <tr th:each="index : ${#numbers.sequence( 0, forecastInputSeries.length - 1)}">
-                <td th:text="${#temporals.format(forecastInputTime[index], 'MM-yyyy')}"></td>
-                <td th:text="${forecastInputSeries[index]}"></td>
-            </tr>
+        <table class="tafla">
+            <thead>
+                <tr>
+                    <th>Tími</th>
+                    <th>Gildi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="index : ${#numbers.sequence( 0, forecastInputSeries.length - 1)}">
+                    <td th:text="${#temporals.format(forecastInputTime[index], 'MM-yyyy')}"></td>
+                    <td th:text="${#numbers.formatDecimal(forecastInputSeries[index], 1, 2, 'COMMA')}"></td>
+                </tr>
+            </tbody>
         </table>
     </main>
 </body>
