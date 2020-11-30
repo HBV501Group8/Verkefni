@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/users.css" />
+    <script>
+        function myFunction() {
+            var x = document.getElementById("searchResults");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+  <h5 style="text-align: center;"><b>Skráður inn sem <span th:text="${username}"></span></b><a th:href="@{/logout}">&nbsp;&nbsp;&nbsp; Útskra</a></h5>
+  <div id="searchResults">
+    <div th:switch="${users}">
+        <h2 th:case="null">No users yet!</h2>
+        <div th:case="*">
+            <table>
+                <thead>
+                <tbody>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Enabled</th>
+                    <th>Admin</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.userName}"></td>
+                    <td th:text="${user.userPassword}"></td>
+                    <td th:text="${user.isEnabled}"></td>
+                    <td th:text="${user.isAdmin}"></td>
+                    <td><a th:href="@{/edit/{id}(id=${user.id})}">Edit</a></td>
+                    <td><a th:href="@{/delete/{id}(id=${user.id})}">Delete</a></td>
+                </tr>
+                </tbody>
+                </thead>
+            </table>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

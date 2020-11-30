@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="https://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/css/updateuser.css" />
+</head>
+<body>
+  <div class="container">
+      <form id="contact" th:action="@{/updateUser}" autocomplete="off" method="GET    " th:object="${user}">
+          <h3>Breyta notanda</h3>
+          <fieldset>
+              <label >User</label><br>
+              <input placeholder="Name"  Name="Name" type="text" tabindex="1" th:field="*{Name}" required autofocus>
+          </fieldset>
+          <fieldset>
+              <label >Email</label><br>
+              <input placeholder="Email" Name="Email" type="email" tabindex="2" th:field="*{Email}" required>
+          </fieldset>
+          <fieldset>
+              <label >UserName</label><br>
+              <input placeholder="UserName" name="userName" type="text"  tabindex="7" th:field="*{userName}"  readonly required>
+          </fieldset>
+          <fieldset>
+              <label >Password</label><br>
+              <input placeholder="userPassword" name="userPassword" type="text"  tabindex="3" th:field="*{userPassword}" required>
+          </fieldset>
+          <fieldset>
+              <input  placeholder="isEnabled" name="isEnabled" type="checkbox" tabindex="4"    th:checked="*{isEnabled}" >&nbsp;&nbsp;Enabled
+          </fieldset>
+          <fieldset>
+              <input  placeholder="Admin" name="isAdmin" type="checkbox" tabindex="5" disabled  th:checked="*{isAdmin}">&nbsp;&nbsp;Admin
+          </fieldset>
+
+          <fieldset>
+              <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+          </fieldset>
+      </form>
+  </div>
+</body>
+</html>
