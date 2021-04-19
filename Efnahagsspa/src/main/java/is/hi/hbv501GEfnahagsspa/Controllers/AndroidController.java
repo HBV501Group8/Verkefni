@@ -179,9 +179,7 @@ public class AndroidController {
                         -"errormsg": Error message to be displayed to user
     */
     @RequestMapping(value = "android/updateforecast/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public String updateForecastById(@PathVariable(value = "id") long id,
-                                     Model model,
-                                     HttpSession session)
+    public String updateForecastById(@PathVariable(value = "id") long id)
     {
         // Load old forecast and retrieve attributes
         Forecast oldForecast = forecastService.findById(id);
@@ -206,20 +204,21 @@ public class AndroidController {
             newForecast.setForecastInputs(generatedForecast.getForecastInputs());
             newForecast.setForecastResults(generatedForecast.getForecastResults());
             newForecast.setGeneratedTime(LocalDateTime.now());
-            User user = (User) session.getAttribute("activeUser");
-            newForecast.setUser(user);
+            newForecast.setUser(oldForecast.getUser());
 
             // Delete old forecast, save new forecast
             forecastService.delete(oldForecast);
             forecastService.save(newForecast);
+
             long newId = forecastService.findById(newForecast.getId()).getId();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String time = newForecast.getGeneratedTime().format(formatter);
-
-            return "{generatedID:" + String.valueOf(newId) + ", time:" + time + "}";
+            System.out.println(time);
+            System.out.println("{generatedID:" + String.valueOf(newId) + ", time:" + time + "}");
+            return "{\"generatedID\":\"" + String.valueOf(newId) + "\", \"time\":\"" + time + "\"}";
 
         } catch(Exception e) {
-            return "{generatedID:failed}";
+            return "{\"generatedID\": \"failed\", \"time\": \"none\"}";
         }
     }
 
@@ -294,55 +293,6 @@ public class AndroidController {
             return "{generatedID: failed}";
         }
     }
-
-    /*
-        forecastResult
-            Use: Catches url query "./forecastResult/{seriesNumber}"
-            Parameters: seriesNumber, index number of series from arrays forecastResults
-                                      and forecastInputs in Forecast object.
-                        model, Model object
-                        session, HttpSession object
-            Returns: Template forecastresult.html template populated with key/value pairs from model.
-                     model key value pairs are:
-                        -"chartImage": Forecast line chart with confidence intervals
-                        -"forecastResultSeries": Forecasted values
-                        -"forecastResultTime": Forecasted value dates
-                        -"forecastInputSeries": Input values
-                        -"forecastInputTime": Input value dates
-
-    @RequestMapping(value = "android/forecastresult/{seriesNumber}", method = RequestMethod.GET)
-    public String forecastResult(@PathVariable int seriesNumber,
-                                 Model model,
-                                 HttpSession session) throws IOException {
-        // Get active forecast
-        Forecast forecast = (Forecast) session.getAttribute("activeForecast");
-
-        // Draw forecast chart using draw method in Forecast object.
-        JFreeChart chart = forecast.drawForecast(forecast.getForecastResults().get(seriesNumber).getName());
-
-        // Convert chart to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(chart.createBufferedImage(1000, 600),"png", baos);
-        baos.flush();
-        byte[] chartInBytes = baos.toByteArray();
-        baos.close();
-
-        // Convert byte array to Base64 and add to model
-        model.addAttribute("chartImage", Base64.getEncoder().encodeToString(chartInBytes));
-
-        // Add forecast result and input to model to display in table
-        double[] forecastResultSeries = forecast.getForecastResults().get(seriesNumber).getSeries();
-        LocalDate[] forecastResultTime = forecast.getForecastResults().get(seriesNumber).getTime();
-        double[] forecastInputSeries =  forecast.getForecastInputs().get(seriesNumber).getSeries();
-        LocalDate[] forecastInputTime = forecast.getForecastInputs().get(seriesNumber).getTime();
-        model.addAttribute("forecastResultSeries", forecastResultSeries);
-        model.addAttribute("forecastResultTime", forecastResultTime);
-        model.addAttribute("forecastInputSeries", forecastInputSeries);
-        model.addAttribute("forecastInputTime", forecastInputTime);
-
-        return "forecastresult";
-
-     */
 
     @RequestMapping(value = "android/loginsubmit", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public String userLogin(@RequestBody String string, HttpServletRequest request, HttpSession session) {
